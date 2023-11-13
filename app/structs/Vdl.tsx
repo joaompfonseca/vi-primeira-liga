@@ -3,4 +3,5 @@ export interface Vdl{
     victories: number;
     draws: number;
     losses: number;
+    points: number;
 }

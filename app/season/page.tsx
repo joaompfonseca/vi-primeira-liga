@@ -6,6 +6,8 @@ import {Game} from "@/app/structs/Game";
 import * as d3 from "d3";
 import {Vdl} from "@/app/structs/Vdl";
 import MyTable from "@/app/components/Table";
+import {Stat} from "@/app/structs/Stat";
+import {Jorn} from "@/app/structs/Jorn";
 
 export default function Home() {
 
@@ -13,11 +15,13 @@ export default function Home() {
     const [data, setData] = React.useState<Game[]>([]);
     const [results, setResults] = React.useState<Vdl[]>([]);
     const [selected, setSelected] = React.useState<string[]>([]);
+    const [stats, setStats] = React.useState<Stat[]>([]);
+    const [points, setPoints] = React.useState<{[id: string] : Jorn[]}>({});
 
     useEffect(() => {
         fetchdata();
         if (!isLoading) {
-            getVictories();
+            treatData();
         }
     }, [isLoading]);
 
@@ -25,10 +29,8 @@ export default function Home() {
         setIsLoading(true)
         await d3.csv('data.csv')
             .then(data => {
-                const games: Game[] = [];
-                const t: string[] = [];
-                for (let i = 0; i < data.length; i++) {
-                    const e = data[i];
+                let games: Game[] = [];
+                data.map((e, i) => {
                     const game = new Game(e["HomeTeam"],
                         e["AwayTeam"],
                         parseInt(e["FTHG"]),
@@ -48,15 +50,9 @@ export default function Home() {
                         parseInt(e["AY"]),
                         parseInt(e["HR"]),
                         parseInt(e["AR"]));
-                    if (!t.includes(game.hometeam)) {
-                        t.push(game.hometeam);
-                    }
-                    if (!t.includes(game.awayteam)) {
-                        t.push(game.awayteam);
-                    }
-                    games.push(game);
-                }
-                setData(games);
+                    games = [...games, game];
+                });
+                setData(()=>games);
             })
             .catch(err => {
                 console.log(err);
@@ -64,49 +60,158 @@ export default function Home() {
         setIsLoading(false);
     }
 
-    const getVictories = () => {
+    const treatData = () => {
         let dict: { [id: string] : Vdl; } = {};
+        let dics: { [id: string] : Stat; } = {};
+        let dicp: { [id: string] : Jorn[] } = {};
         for (let i = 0; i < data.length; i++) {
             const game = data[i];
+
+            // Get Points and Victories
+
             if (game.fulltimeresult === "H") {
                 if (dict[game.hometeam] === undefined) {
-                    dict[game.hometeam] = {team: game.hometeam, victories: 1, draws: 0, losses: 0};
+                    dict[game.hometeam] = {team: game.hometeam, victories: 1, draws: 0, losses: 0, points: 3};
                 } else if (dict[game.awayteam] === undefined) {
-                    dict[game.awayteam] = {team: game.awayteam, victories: 0, draws: 0, losses: 1};
+                    dict[game.awayteam] = {team: game.awayteam, victories: 0, draws: 0, losses: 1, points: 0};
                 }
                 else {
                     dict[game.hometeam].victories += 1;
+                    dict[game.hometeam].points += 3;
                     dict[game.awayteam].losses += 1;
                 }
             } else if (game.fulltimeresult === "D") {
                 if (dict[game.hometeam] === undefined) {
-                    dict[game.hometeam] = {team: game.hometeam, victories: 0, draws: 1, losses: 0};
+                    dict[game.hometeam] = {team: game.hometeam, victories: 0, draws: 1, losses: 0, points: 1};
                 } else if (dict[game.awayteam] === undefined) {
-                    dict[game.awayteam] = {team: game.awayteam, victories: 0, draws: 1, losses: 0};
+                    dict[game.awayteam] = {team: game.awayteam, victories: 0, draws: 1, losses: 0, points : 1};
                 }
                 else {
                     dict[game.hometeam].draws += 1;
+                    dict[game.hometeam].points += 1;
                     dict[game.awayteam].draws += 1;
+                    dict[game.awayteam].points += 1;
                 }
             } else if (game.fulltimeresult === "A") {
                 if (dict[game.hometeam] === undefined) {
-                    dict[game.hometeam] = {team: game.hometeam, victories: 0, draws: 0, losses: 1};
+                    dict[game.hometeam] = {team: game.hometeam, victories: 0, draws: 0, losses: 1, points: 0};
                 } else if (dict[game.awayteam] === undefined) {
-                    dict[game.awayteam] = {team: game.awayteam, victories: 1, draws: 0, losses: 0};
-                }
-                else {
+                    dict[game.awayteam] = {team: game.awayteam, victories: 1, draws: 0, losses: 0, points: 3};
+                } else {
                     dict[game.hometeam].losses += 1;
                     dict[game.awayteam].victories += 1;
+                    dict[game.awayteam].points += 3;
+                }
+            }
+
+            // Get Stats
+            const ht = game.hometeam;
+            const at = game.awayteam;
+
+            if (dics[ht] === undefined) {
+                dics[ht] = {
+                    team: ht,
+                    goalscored: game.homescore,
+                    goalsconceded: game.awayscore,
+                    shots: game.homeshots,
+                    shotstarget: game.homeshotstarget,
+                    shotswoodwork: game.homeshotswoodwork,
+                    corners: game.homecorners,
+                    fouls: game.homefouls,
+                    yellows: game.homeyellows,
+                    reds: game.homered
+                }
+            } else {
+                dics[ht].goalscored += game.homescore;
+                dics[ht].goalsconceded += game.awayscore;
+                dics[ht].shots += game.homeshots;
+                dics[ht].shotstarget += game.homeshotstarget;
+                dics[ht].shotswoodwork += game.homeshotswoodwork;
+                dics[ht].corners += game.homecorners;
+                dics[ht].fouls += game.homefouls;
+                dics[ht].yellows += game.homeyellows;
+                dics[ht].reds += game.homered;
+            }
+
+            if(dics[at] === undefined) {
+                dics[at] = {
+                    team: at,
+                    goalscored: game.awayscore,
+                    goalsconceded: game.homescore,
+                    shots: game.awayshots,
+                    shotstarget: game.awayshotstarget,
+                    shotswoodwork: game.awayshotswoodwork,
+                    corners: game.awaycorners,
+                    fouls: game.awayfouls,
+                    yellows: game.awayyellows,
+                    reds: game.awayred
+                }
+            } else {
+                dics[at].goalscored += game.awayscore;
+                dics[at].goalsconceded += game.homescore;
+                dics[at].shots += game.awayshots;
+                dics[at].shotstarget += game.awayshotstarget;
+                dics[at].shotswoodwork += game.awayshotswoodwork;
+                dics[at].corners += game.awaycorners;
+                dics[at].fouls += game.awayfouls;
+                dics[at].yellows += game.awayyellows;
+                dics[at].reds += game.awayred;
+            }
+
+            // Get Points for each jornada
+            const r = game.fulltimeresult;
+
+            if (r === "H") {
+                if (dicp[ht] === undefined) {
+                    dicp[ht] = [{jornada: 1, points: 3}];
+                } else {
+                    dicp[ht].push({jornada: dicp[ht].length + 1, points: dicp[ht][dicp[ht].length - 1].points + 3});
+                }
+                if (dicp[at] === undefined) {
+                    dicp[at] = [{jornada: 1, points: 0}];
+                } else {
+                    dicp[at].push({jornada: dicp[at].length + 1, points: dicp[at][dicp[at].length - 1].points});
+                }
+            } else if (r === "D") {
+                if (dicp[ht] === undefined) {
+                    dicp[ht] = [{jornada: 1, points: 1}];
+                } else {
+                    dicp[ht].push({jornada: dicp[ht].length + 1, points: dicp[ht][dicp[ht].length - 1].points + 1});
+                }
+                if (dicp[at] === undefined) {
+                    dicp[at] = [{jornada: 1, points: 1}];
+                }
+                else {
+                    dicp[at].push({jornada: dicp[at].length + 1, points: dicp[at][dicp[at].length - 1].points + 1});
+                }
+            } else {
+                if (dicp[ht] === undefined) {
+                    dicp[ht] = [{jornada: 1, points: 0}];
+                }
+                else {
+                    dicp[ht].push({jornada: dicp[ht].length + 1, points: dicp[ht][dicp[ht].length - 1].points});
+                }
+                if (dicp[at] === undefined) {
+                    dicp[at] = [{jornada: 1, points: 3}];
+                } else {
+                    dicp[at].push({jornada: dicp[at].length + 1, points: dicp[at][dicp[at].length - 1].points + 3});
                 }
             }
         }
+
+        setPoints(dicp);
+
+        for (const [key, value] of Object.entries(dics)) {
+            stats.push(value);
+        }
+
         results.splice(0)
         for (const [key, value] of Object.entries(dict)) {
             results.push(value);
         }
-        // sort results by victories
+        // sort results by points
         results.sort((a, b) => {
-            return b.victories - a.victories;
+            return b.points - a.points;
         });
     }
 
@@ -114,7 +219,7 @@ export default function Home() {
         setSelected(selected);
     }
 
-    //console.log(results)
+    console.log(points);
 
   return (
       <div>

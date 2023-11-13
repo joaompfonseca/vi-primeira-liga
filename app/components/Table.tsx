@@ -10,6 +10,7 @@ type Row = {
     victories: number;
     draws: number;
     losses: number;
+    points: number;
 };
 
 interface TableProps {
@@ -29,7 +30,8 @@ const MyTable: React.FC<TableProps> = ({data, sendSelected}) => {
                 name: e.team,
                 victories: e.victories,
                 draws: e.draws,
-                losses: e.losses
+                losses: e.losses,
+                points: e.points
               }
        }));
     }, []);
@@ -69,7 +71,7 @@ const MyTable: React.FC<TableProps> = ({data, sendSelected}) => {
     const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
     return (
-        <TableContainer component={Paper} style={{width: "22%"}}>
+        <TableContainer component={Paper} style={{width: "25%"}}>
             <Table>
                 <TableHead>
                     <TableRow>
@@ -84,6 +86,7 @@ const MyTable: React.FC<TableProps> = ({data, sendSelected}) => {
                         <TableCell>V</TableCell>
                         <TableCell>D</TableCell>
                         <TableCell>L</TableCell>
+                        <TableCell>P</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -103,7 +106,8 @@ const MyTable: React.FC<TableProps> = ({data, sendSelected}) => {
                                 <TableCell width="10%">{row.name}</TableCell>
                                 <TableCell width="10%">{row.victories}</TableCell>
                                 <TableCell width="10%">{row.draws}</TableCell>
-                                <TableCell width="12%">{row.losses}</TableCell>
+                                <TableCell width="10%">{row.losses}</TableCell>
+                                <TableCell width="10%">{row.points}</TableCell>
                             </TableRow>
                         );
                     })}
