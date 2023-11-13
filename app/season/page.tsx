@@ -8,6 +8,10 @@ import {Vdl} from "@/app/structs/Vdl";
 import MyTable from "@/app/components/Table";
 import {Stat} from "@/app/structs/Stat";
 import {Jorn} from "@/app/structs/Jorn";
+import {Container, Grid, Typography} from "@mui/material";
+import {LineChart} from "@/app/components/LineChart";
+import {Point2D} from "@/app/structs/Point2D";
+import {max} from "d3";
 
 export default function Home() {
 
@@ -16,7 +20,7 @@ export default function Home() {
     const [results, setResults] = React.useState<Vdl[]>([]);
     const [selected, setSelected] = React.useState<string[]>([]);
     const [stats, setStats] = React.useState<Stat[]>([]);
-    const [points, setPoints] = React.useState<{[id: string] : Jorn[]}>({});
+    const [points, setPoints] = React.useState<{ [id: string]: Jorn[] }>({});
 
     useEffect(() => {
         fetchdata();
@@ -52,7 +56,7 @@ export default function Home() {
                         parseInt(e["AR"]));
                     games = [...games, game];
                 });
-                setData(()=>games);
+                setData(() => games);
             })
             .catch(err => {
                 console.log(err);
@@ -61,9 +65,9 @@ export default function Home() {
     }
 
     const treatData = () => {
-        let dict: { [id: string] : Vdl; } = {};
-        let dics: { [id: string] : Stat; } = {};
-        let dicp: { [id: string] : Jorn[] } = {};
+        let dict: { [id: string]: Vdl; } = {};
+        let dics: { [id: string]: Stat; } = {};
+        let dicp: { [id: string]: Jorn[] } = {};
         for (let i = 0; i < data.length; i++) {
             const game = data[i];
 
@@ -74,8 +78,7 @@ export default function Home() {
                     dict[game.hometeam] = {team: game.hometeam, victories: 1, draws: 0, losses: 0, points: 3};
                 } else if (dict[game.awayteam] === undefined) {
                     dict[game.awayteam] = {team: game.awayteam, victories: 0, draws: 0, losses: 1, points: 0};
-                }
-                else {
+                } else {
                     dict[game.hometeam].victories += 1;
                     dict[game.hometeam].points += 3;
                     dict[game.awayteam].losses += 1;
@@ -84,9 +87,8 @@ export default function Home() {
                 if (dict[game.hometeam] === undefined) {
                     dict[game.hometeam] = {team: game.hometeam, victories: 0, draws: 1, losses: 0, points: 1};
                 } else if (dict[game.awayteam] === undefined) {
-                    dict[game.awayteam] = {team: game.awayteam, victories: 0, draws: 1, losses: 0, points : 1};
-                }
-                else {
+                    dict[game.awayteam] = {team: game.awayteam, victories: 0, draws: 1, losses: 0, points: 1};
+                } else {
                     dict[game.hometeam].draws += 1;
                     dict[game.hometeam].points += 1;
                     dict[game.awayteam].draws += 1;
@@ -133,7 +135,7 @@ export default function Home() {
                 dics[ht].reds += game.homered;
             }
 
-            if(dics[at] === undefined) {
+            if (dics[at] === undefined) {
                 dics[at] = {
                     team: at,
                     goalscored: game.awayscore,
@@ -180,15 +182,13 @@ export default function Home() {
                 }
                 if (dicp[at] === undefined) {
                     dicp[at] = [{jornada: 1, points: 1}];
-                }
-                else {
+                } else {
                     dicp[at].push({jornada: dicp[at].length + 1, points: dicp[at][dicp[at].length - 1].points + 1});
                 }
             } else {
                 if (dicp[ht] === undefined) {
                     dicp[ht] = [{jornada: 1, points: 0}];
-                }
-                else {
+                } else {
                     dicp[ht].push({jornada: dicp[ht].length + 1, points: dicp[ht][dicp[ht].length - 1].points});
                 }
                 if (dicp[at] === undefined) {
@@ -215,15 +215,61 @@ export default function Home() {
         });
     }
 
-    const getSelected = (selected:string[]) => {
+    const updateSelected = (selected: string[]) => {
         setSelected(selected);
     }
 
     console.log(points);
 
-  return (
-      <div>
-          { data !== undefined && data.length > 0 && <MyTable data={results} sendSelected={getSelected}/> }
-      </div>
-  );
+    // TODO: Criar função getPointsPerJornada que retorna os pontos Point2D[] (foi uma interface que criei) por
+    //  jornada passando como argumento "selected", que contém os nomes das equipas selecionadas
+
+    /*
+    Points per Jornada
+    */
+
+    const ppjData = Object.keys(points)
+        .filter((key) => selected.includes(key))
+        .map((key) => {
+            return {
+                label: key, points: points[key].map((j) => {
+                    return {x: j.jornada, y: j.points};
+                })
+            };
+        });
+
+    const ppjXScale = d3.scaleLinear()
+        .domain([
+            1,
+            2*18 // TODO: Alterar para 2*Número de equipas na temporada
+        ])
+        .range([0, 1000]);
+
+
+    const ppjYScale = d3.scaleLinear()
+        .domain([
+            0,
+            (ppjData.length > 0) ?
+                max(ppjData, d => max(d.points, (p) => p.y)) as number
+                : 3*2*18 // TODO: Alterar para 3 pontos*2 jogos*Número de equipas na temporada
+        ])
+        .range([0, 500]);
+
+    return (
+        <Grid container spacing={2} padding={2}>
+            <Grid item xs={3}>
+                {data !== undefined && data.length > 0 && <MyTable data={results} updateSelected={updateSelected}/>}
+            </Grid>
+            <Grid item xs={9}>
+                <Typography variant={"h4"}>Evolução de Pontos por Jornada</Typography>
+                <LineChart
+                    width={"100%"}
+                    height={"100%"}
+                    xScale={ppjXScale}
+                    yScale={ppjYScale}
+                    data={ppjData}
+                ></LineChart>
+            </Grid>
+        </Grid>
+    );
 }

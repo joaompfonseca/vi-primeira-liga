@@ -15,10 +15,10 @@ type Row = {
 
 interface TableProps {
     data: Vdl[];
-    sendSelected: (selected: string[]) => void
+    updateSelected: (selected: string[]) => void
 }
 
-const MyTable: React.FC<TableProps> = ({data, sendSelected}) => {
+const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
 
     const [selected, setSelected] = React.useState<string[]>([]);
     const [rows, setRows] = React.useState<Row[]>([]);
@@ -40,11 +40,11 @@ const MyTable: React.FC<TableProps> = ({data, sendSelected}) => {
         if (event.target.checked) {
             const newSelecteds = rows.map((n) => n.id);
             setSelected(newSelecteds);
-            sendSelected(newSelecteds);
+            updateSelected(newSelecteds);
             return;
         }
         setSelected([]);
-        sendSelected([]);
+        updateSelected([]);
     };
 
     const handleClick = (event: React.ChangeEvent<HTMLInputElement>, id: string) => {
@@ -65,13 +65,13 @@ const MyTable: React.FC<TableProps> = ({data, sendSelected}) => {
         }
 
         setSelected(newSelected);
-        sendSelected(newSelected);
+        updateSelected(newSelected);
     };
 
     const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
     return (
-        <TableContainer component={Paper} style={{width: "25%"}}>
+        <TableContainer component={Paper}>
             <Table>
                 <TableHead>
                     <TableRow>
