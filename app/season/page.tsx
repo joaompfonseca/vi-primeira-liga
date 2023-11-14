@@ -8,7 +8,7 @@ import {Vdl} from "@/app/structs/Vdl";
 import MyTable from "@/app/components/Table";
 import {Stat} from "@/app/structs/Stat";
 import {Jorn} from "@/app/structs/Jorn";
-import {Container, Grid, Typography} from "@mui/material";
+import {Box, Container, Grid, Stack, Typography} from "@mui/material";
 import {LineChart} from "@/app/components/LineChart";
 import {Point2D} from "@/app/structs/Point2D";
 import {max} from "d3";
@@ -20,7 +20,9 @@ export default function Home() {
     const [results, setResults] = React.useState<Vdl[]>([]);
     const [selected, setSelected] = React.useState<string[]>([]);
     const [stats, setStats] = React.useState<Stat[]>([]);
-    const [points, setPoints] = React.useState<{ [id: string]: Jorn[] }>({});
+    const [points, setPoints] = React.useState<{
+        [id: string]: Jorn[]
+    }>({});
 
     useEffect(() => {
         fetchdata();
@@ -65,9 +67,15 @@ export default function Home() {
     }
 
     const treatData = () => {
-        let dict: { [id: string]: Vdl; } = {};
-        let dics: { [id: string]: Stat; } = {};
-        let dicp: { [id: string]: Jorn[] } = {};
+        let dict: {
+            [id: string]: Vdl;
+        } = {};
+        let dics: {
+            [id: string]: Stat;
+        } = {};
+        let dicp: {
+            [id: string]: Jorn[]
+        } = {};
         for (let i = 0; i < data.length; i++) {
             const game = data[i];
 
@@ -269,9 +277,9 @@ export default function Home() {
     const ppjXScale = d3.scaleLinear()
         .domain([
             1,
-            2*18 // TODO: Alterar para 2*Número de equipas na temporada
+            2 * 18 // TODO: Alterar para 2*Número de equipas na temporada
         ])
-        .range([0, 1000]);
+        .range([0, 480]);
 
 
     const ppjYScale = d3.scaleLinear()
@@ -279,28 +287,44 @@ export default function Home() {
             0,
             (ppjData.length > 0) ?
                 max(ppjData, d => max(d.points, (p) => p.y)) as number
-                : 3*2*18 // TODO: Alterar para 3 pontos*2 jogos*Número de equipas na temporada
+                : 3 * 2 * 18 // TODO: Alterar para 3 pontos*2 jogos*Número de equipas na temporada
         ])
-        .range([0, 500]);
+        .range([0, 250]);
 
     return (
-        <Grid container spacing={2} padding={2}>
-            <Grid item xs={3}>
+        <Grid container padding={2}>
+            <Grid item xs={4} padding={2}>
                 {data !== undefined && data.length > 0 &&
                     <MyTable
                         data={results}
                         updateSelected={updateSelected}/>
                 }
             </Grid>
-            <Grid item xs={9}>
-                <Typography variant={"h4"}>Evolução de Pontos por Jornada</Typography>
-                <LineChart
-                    width={"100%"}
-                    height={"100%"}
-                    xScale={ppjXScale}
-                    yScale={ppjYScale}
-                    data={ppjData}
-                ></LineChart>
+            <Grid container xs={8} padding={2}>
+                <Grid item xs={12}>
+                    <Typography variant={"h5"}>Evolução de Pontos por Jornada</Typography>
+                    <LineChart
+                        width={"100%"}
+                        height={"100%"}
+                        xScale={ppjXScale}
+                        yScale={ppjYScale}
+                        xSpacing={1}
+                        ySpacing={5}
+                        data={ppjData}
+                    ></LineChart>
+                </Grid>
+                <Grid container xs={12}>
+                    <Typography variant={"h5"}>Parallel Coordinates Plot</Typography>
+                    <LineChart
+                        width={"100%"}
+                        height={"100%"}
+                        xScale={ppjXScale}
+                        yScale={ppjYScale}
+                        xSpacing={1}
+                        ySpacing={5}
+                        data={ppjData}
+                    ></LineChart>
+                </Grid>
             </Grid>
         </Grid>
     );

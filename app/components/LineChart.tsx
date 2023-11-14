@@ -8,10 +8,16 @@ type LineChartProps = {
     height: number | string;
     xScale: d3.ScaleLinear<number, number>;
     yScale: d3.ScaleLinear<number, number>;
+    xSpacing: number;
+    ySpacing: number;
     data: { label: string, points: Point2D[], color: string }[];
 };
 
-export const LineChart = ({width, height, xScale, yScale, data}: LineChartProps) => {
+export const LineChart = ({width, height, xScale, yScale, xSpacing, ySpacing, data}: LineChartProps) => {
+
+    const xPixelsPerTick = xSpacing*(xScale.range()[1] - xScale.range()[0]) / (xScale.domain()[1] - xScale.domain()[0]);
+    const yPixelsPerTick = ySpacing*(yScale.range()[1] - yScale.range()[0]) / (yScale.domain()[1] - yScale.domain()[0]);
+
 
     // build the lines
 
@@ -25,8 +31,8 @@ export const LineChart = ({width, height, xScale, yScale, data}: LineChartProps)
     return (
         <svg width={width} height={height}>
             <g transform={`translate(50, ${yScale.range()[1] + 30})`}>
-                <AxisLeft yScale={yScale} pixelsPerTick={25} width={100}></AxisLeft>
-                <AxisBottom xScale={xScale} pixelsPerTick={30}></AxisBottom>
+                <AxisBottom xScale={xScale} pixelsPerTick={xPixelsPerTick}></AxisBottom>
+                <AxisLeft yScale={yScale} pixelsPerTick={yPixelsPerTick} width={100}></AxisLeft>
             </g>
             <g transform={`translate(50, 30)`}>
                 {data.map((d, i) =>
