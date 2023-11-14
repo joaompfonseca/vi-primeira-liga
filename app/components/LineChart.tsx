@@ -15,8 +15,8 @@ type LineChartProps = {
 
 export const LineChart = ({width, height, xScale, yScale, xSpacing, ySpacing, data}: LineChartProps) => {
 
-    const xPixelsPerTick = xSpacing*(xScale.range()[1] - xScale.range()[0]) / (xScale.domain()[1] - xScale.domain()[0]);
-    const yPixelsPerTick = ySpacing*(yScale.range()[1] - yScale.range()[0]) / (yScale.domain()[1] - yScale.domain()[0]);
+    const xPixelsPerTick = Math.abs(xSpacing*(xScale.range()[1] - xScale.range()[0]) / (xScale.domain()[1] - xScale.domain()[0]));
+    const yPixelsPerTick = Math.abs(ySpacing*(yScale.range()[1] - yScale.range()[0]) / (yScale.domain()[1] - yScale.domain()[0]));
 
 
     // build the lines

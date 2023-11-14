@@ -1,6 +1,5 @@
 "use client"
 
-import BarChart from "@/app/BarChart";
 import React, {useEffect} from "react";
 import {Game} from "@/app/structs/Game";
 import * as d3 from "d3";
@@ -8,10 +7,10 @@ import {Vdl} from "@/app/structs/Vdl";
 import MyTable from "@/app/components/Table";
 import {Stat} from "@/app/structs/Stat";
 import {Jorn} from "@/app/structs/Jorn";
-import {Box, Container, Grid, Stack, Typography} from "@mui/material";
+import {Grid, Typography} from "@mui/material";
 import {LineChart} from "@/app/components/LineChart";
-import {Point2D} from "@/app/structs/Point2D";
 import {max} from "d3";
+import {ParallelCoordinate} from "@/app/components/ParallelCoordinatesChart";
 
 export default function Home() {
 
@@ -281,7 +280,6 @@ export default function Home() {
         ])
         .range([0, 480]);
 
-
     const ppjYScale = d3.scaleLinear()
         .domain([
             0,
@@ -290,6 +288,75 @@ export default function Home() {
                 : 3 * 2 * 18 // TODO: Alterar para 3 pontos*2 jogos*Número de equipas na temporada
         ])
         .range([0, 250]);
+
+    /*
+    Parallel Coordinates Chart
+     */
+
+    const pccVars = ["position", "points", "wins", "losses", "draws"];
+
+    const pccData = results.map((d, i) => {
+        return {
+            position: i + 1,
+            points: d.points,
+            wins: d.victories,
+            draws: d.draws,
+            losses: d.losses,
+            label: d.team,
+            color: colors[i]
+        }
+    }).filter(({label}) => selected.includes(label));
+
+    const pccXScale = d3
+        .scalePoint<string>()
+        .range([0, 480])
+        .domain(pccVars);
+
+    const pccYScales = {
+        position: d3.scaleLinear()
+            .domain([18, 1]) // TODO: Alterar para Número de equipas na temporada
+            .range([250, 18]),
+        points: d3.scaleLinear()
+            .domain([
+                    0,
+                    (pccData.length > 0) ?
+                        max(pccData, d => d.points) as number
+                        : 3 * 2 * 18 // TODO: Alterar para 3 pontos*2 jogos*Número de equipas na temporada)
+                ])
+            .range([250, 0]),
+        wins: d3.scaleLinear()
+            .domain([
+                0,
+                (pccData.length > 0) ?
+                    max(pccData, d => d.wins) as number
+                    : 2 * 18 // TODO: Alterar para 2*Número de equipas na temporada
+            ])
+            .range([250, 0]),
+        draws: d3.scaleLinear()
+            .domain([
+                0,
+                (pccData.length > 0) ?
+                    max(pccData, d => d.draws) as number
+                    : 2 * 18 // TODO: Alterar para 2*Número de equipas na temporada
+            ])
+            .range([250, 0]),
+        losses: d3.scaleLinear()
+            .domain([
+                0,
+                (pccData.length > 0) ?
+                    max(pccData, d => d.losses) as number
+                    : 2 * 18 // TODO: Alterar para 2*Número de equipas na temporada
+            ])
+            .range([250, 0])
+    };
+
+    const pccYSpacings = {
+        position: 1,
+        points: 5,
+        wins: 2,
+        draws: 2,
+        losses: 2
+    }
 
     return (
         <Grid container padding={2}>
@@ -313,17 +380,17 @@ export default function Home() {
                         data={ppjData}
                     ></LineChart>
                 </Grid>
-                <Grid container xs={12}>
+                <Grid item xs={12}>
                     <Typography variant={"h5"}>Parallel Coordinates Plot</Typography>
-                    <LineChart
+                    <ParallelCoordinate
                         width={"100%"}
                         height={"100%"}
-                        xScale={ppjXScale}
-                        yScale={ppjYScale}
-                        xSpacing={1}
-                        ySpacing={5}
-                        data={ppjData}
-                    ></LineChart>
+                        xScale={pccXScale}
+                        yScales={pccYScales}
+                        ySpacings={pccYSpacings}
+                        data={pccData}
+                        variables={pccVars}
+                    ></ParallelCoordinate>
                 </Grid>
             </Grid>
         </Grid>
