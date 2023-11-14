@@ -221,22 +221,50 @@ export default function Home() {
 
     console.log(points);
 
-    // TODO: Criar função getPointsPerJornada que retorna os pontos Point2D[] (foi uma interface que criei) por
-    //  jornada passando como argumento "selected", que contém os nomes das equipas selecionadas
+    /*
+    Color palette
+     */
+
+    const colors = [
+        "#FF0000", // Red
+        "#00FF00", // Lime
+        "#0000FF", // Blue
+        "#FFFF00", // Yellow
+        "#FF00FF", // Magenta
+        "#00FFFF", // Cyan
+        "#C0C0C0", // Silver
+        "#808080", // Gray
+        "#800000", // Maroon
+        "#008000", // Green
+        "#000080", // Navy
+        "#FFA500", // Orange
+        "#A52A2A", // Brown
+        "#800080", // Purple
+        "#008080", // Teal
+        "#F0E68C", // Khaki
+        "#FFC0CB", // Pink
+        "#ADD8E6", // LightBlue
+        "#20B2AA", // LightSeaGreen
+        "#7FFF00"  // Chartreuse
+    ];
 
     /*
     Points per Jornada
     */
 
+    // TODO: Criar função getPointsPerJornada que retorna os pontos Point2D[] (foi uma interface que criei) por
+    //  jornada passando como argumento "selected", que contém os nomes das equipas selecionadas
     const ppjData = Object.keys(points)
-        .filter((key) => selected.includes(key))
-        .map((key) => {
+        .map((key, i) => {
             return {
-                label: key, points: points[key].map((j) => {
+                label: key,
+                points: points[key].map((j) => {
                     return {x: j.jornada, y: j.points};
-                })
+                }),
+                color: colors[i]
             };
-        });
+        })
+        .filter(({label}) => selected.includes(label));
 
     const ppjXScale = d3.scaleLinear()
         .domain([
@@ -258,7 +286,11 @@ export default function Home() {
     return (
         <Grid container spacing={2} padding={2}>
             <Grid item xs={3}>
-                {data !== undefined && data.length > 0 && <MyTable data={results} updateSelected={updateSelected}/>}
+                {data !== undefined && data.length > 0 &&
+                    <MyTable
+                        data={results}
+                        updateSelected={updateSelected}/>
+                }
             </Grid>
             <Grid item xs={9}>
                 <Typography variant={"h4"}>Evolução de Pontos por Jornada</Typography>

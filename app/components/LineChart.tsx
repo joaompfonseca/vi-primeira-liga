@@ -8,7 +8,7 @@ type LineChartProps = {
     height: number | string;
     xScale: d3.ScaleLinear<number, number>;
     yScale: d3.ScaleLinear<number, number>;
-    data: { label: string, points: Point2D[] }[];
+    data: { label: string, points: Point2D[], color: string }[];
 };
 
 export const LineChart = ({width, height, xScale, yScale, data}: LineChartProps) => {
@@ -29,12 +29,12 @@ export const LineChart = ({width, height, xScale, yScale, data}: LineChartProps)
                 <AxisBottom xScale={xScale} pixelsPerTick={30}></AxisBottom>
             </g>
             <g transform={`translate(50, 30)`}>
-                {data.map(d =>
+                {data.map((d, i) =>
                     <path
                         key={d.label}
                         d={lineBuilder(d.points) as string}
                         fill={"none"}
-                        stroke={"steelblue"}
+                        stroke={d.color}
                         strokeWidth={2}
                     />
                 )}

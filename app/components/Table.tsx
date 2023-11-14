@@ -1,7 +1,7 @@
 "use client"
 
 import React, {useEffect} from 'react';
-import { Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import {Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import {Vdl} from "@/app/structs/Vdl";
 
 type Row = {
@@ -24,16 +24,16 @@ const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
     const [rows, setRows] = React.useState<Row[]>([]);
 
     useEffect(() => {
-       setRows(()=>data.map((e, i) => {
-              return {
+        setRows(() => data.map((e, i) => {
+            return {
                 id: e.team,
                 name: e.team,
                 victories: e.victories,
                 draws: e.draws,
                 losses: e.losses,
                 points: e.points
-              }
-       }));
+            }
+        }));
     }, []);
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +90,7 @@ const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => {
+                    {rows.map((row, i) => {
                         const isItemSelected = isSelected(row.id);
                         return (
                             <TableRow
