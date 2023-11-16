@@ -2,7 +2,8 @@
 
 import React, {useEffect} from 'react';
 import {Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
-import {Vdl} from "@/app/structs/Vdl";
+import { Info } from "../structs/Info";
+import { VictoryDrawLoss } from '../structs/VictoryDrawLoss';
 
 type Row = {
     id: string;
@@ -14,7 +15,7 @@ type Row = {
 };
 
 interface TableProps {
-    data: Vdl[];
+    data: {[id:string]: Info};
     updateSelected: (selected: string[]) => void
 }
 
@@ -23,8 +24,23 @@ const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
     const [selected, setSelected] = React.useState<string[]>([]);
     const [rows, setRows] = React.useState<Row[]>([]);
 
+    const [results, setResults] = React.useState<VictoryDrawLoss[]>([]);
+
     useEffect(() => {
-        setRows(() => data.map((e, i) => {
+
+        let temp: VictoryDrawLoss[] = [];
+
+        for (const [key, value] of Object.entries(data)){
+            temp.push(value.results[0]);
+        }
+
+        temp.sort((a, b) => {
+            return b.points - a.points;
+        });
+
+        console.log(temp);
+
+        setRows(() => temp.map((e, i) => {
             return {
                 id: e.team,
                 name: e.team,
