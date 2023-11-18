@@ -11,7 +11,7 @@ import {Grid, Typography} from "@mui/material";
 import {LineChart} from "@/app/components/LineChart";
 import {max} from "d3";
 import {ParallelCoordinate} from "@/app/components/ParallelCoordinatesChart";
-import { Info } from "../structs/Info";
+import {Info} from "../structs/Info";
 
 export default function Home() {
 
@@ -24,13 +24,13 @@ export default function Home() {
         [id: string]: Matchday[]
     }>({});
 
-    const [info, setInfo] = React.useState<{[id: string]: Info}>({});
+    const [info, setInfo] = React.useState<{ [id: string]: Info }>({});
 
     /*
     Color palette
      */
 
-    const colors: {[id:string]: string}= {
+    const colors: { [id: string]: string } = {
         "Benfica": "#FF0000",
         "Porto": "#0000FF",
         "Sp Braga": "#FF4630",
@@ -354,7 +354,7 @@ export default function Home() {
             [id: string]: Info;
         } = {};
 
-        for(const [key, value] of Object.entries(dicp)){
+        for (const [key, value] of Object.entries(dicp)) {
             temp[key] = {
                 color: "",
                 results: [],
@@ -511,19 +511,17 @@ export default function Home() {
 
 
     /*
-    Points per jornada
+    Points per match day
     */
 
-    // TODO: Criar função getPointsPerjornada que retorna os pontos Point2D[] (foi uma interface que criei) por
-    //  jornada passando como argumento "selected", que contém os nomes das equipas selecionadas
-    const ppjData = Object.keys(points)
-        .map((key, i) => {
+    const ppjData = Object.entries(info)
+        .map(([key, value]) => {
             return {
                 label: key,
-                points: points[key].map((j) => {
-                    return {x: j.jornada, y: j.points};
+                points: value.points.map((m) => {
+                    return {x: m.jornada, y: m.points};
                 }),
-                color: colors[key]
+                color: value.color
             };
         })
         .filter(({label}) => selected.includes(label));
@@ -531,7 +529,7 @@ export default function Home() {
     const ppjXScale = d3.scaleLinear()
         .domain([
             1,
-            2 * 18 // TODO: Alterar para 2*Número de equipas na temporada
+            2 * Object.keys(info).length
         ])
         .range([0, 480]);
 
@@ -540,7 +538,7 @@ export default function Home() {
             0,
             (ppjData.length > 0) ?
                 max(ppjData, d => max(d.points, (p) => p.y)) as number
-                : 3 * 2 * 18 // TODO: Alterar para 3 pontos*2 jogos*Número de equipas na temporada
+                : 3 * 2 * Object.keys(info).length
         ])
         .range([0, 250]);
 
@@ -573,11 +571,11 @@ export default function Home() {
             .range([250, 18]),
         points: d3.scaleLinear()
             .domain([
-                    0,
-                    (pccData.length > 0) ?
-                        max(pccData, d => d.points) as number
-                        : 3 * 2 * 18 // TODO: Alterar para 3 pontos*2 jogos*Número de equipas na temporada)
-                ])
+                0,
+                (pccData.length > 0) ?
+                    max(pccData, d => d.points) as number
+                    : 3 * 2 * 18 // TODO: Alterar para 3 pontos*2 jogos*Número de equipas na temporada)
+            ])
             .range([250, 0]),
         wins: d3.scaleLinear()
             .domain([
