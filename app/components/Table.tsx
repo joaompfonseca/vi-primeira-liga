@@ -2,8 +2,8 @@
 
 import React, {useEffect} from 'react';
 import {Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
-import { Info } from "../structs/Info";
-import { VictoryDrawLoss } from '../structs/VictoryDrawLoss';
+import {Info} from "../structs/Info";
+import {VictoryDrawLoss} from '../structs/VictoryDrawLoss';
 
 type Row = {
     id: string;
@@ -12,10 +12,11 @@ type Row = {
     draws: number;
     losses: number;
     points: number;
+    color: string;
 };
 
 interface TableProps {
-    data: {[id:string]: Info};
+    data: { [id: string]: Info };
     updateSelected: (selected: string[]) => void
 }
 
@@ -30,7 +31,7 @@ const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
 
         let temp: VictoryDrawLoss[] = [];
 
-        for (const [key, value] of Object.entries(data)){
+        for (const [key, value] of Object.entries(data)) {
             temp.push(value.results[0]);
         }
 
@@ -47,7 +48,8 @@ const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
                 victories: e.victories,
                 draws: e.draws,
                 losses: e.losses,
-                points: e.points
+                points: e.points,
+                color: data[e.team].color
             }
         }));
     }, []);
@@ -84,6 +86,15 @@ const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
         updateSelected(newSelected);
     };
 
+    const hexToRGBA = (hex: string, alpha: number) => {
+        const hexValue = hex.replace('#', '');
+        const r = parseInt(hexValue.substring(0, 2), 16);
+        const g = parseInt(hexValue.substring(2, 4), 16);
+        const b = parseInt(hexValue.substring(4, 6), 16);
+
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
     const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
     return (
@@ -113,7 +124,13 @@ const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
                                 key={row.id}
                                 selected={isItemSelected}
                             >
-                                <TableCell padding="checkbox">
+                                <TableCell
+                                    padding="checkbox"
+                                    style={{
+                                        width: '3%',
+                                        backgroundColor: hexToRGBA(row.color, isItemSelected ? 1 : 0.5)
+                                    }}
+                                >
                                     <Checkbox
                                         checked={isItemSelected}
                                         onChange={(event) => handleClick(event, row.id)}
