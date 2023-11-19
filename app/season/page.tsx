@@ -104,13 +104,13 @@ export default function Home() {
             [id: string]: VictoryDrawLoss;
         } = {};
         let dics: {
-            [id: string]: Stat;
+            [id: string]: Stat[];
         } = {};
         let dicsh: {
-            [id: string]: Stat;
+            [id: string]: Stat[];
         } = {};
         let dicsa: {
-            [id: string]: Stat;
+            [id: string]: Stat[];
         } = {};
         let dicp: {
             [id: string]: Matchday[]
@@ -122,55 +122,55 @@ export default function Home() {
 
             if (game.fulltimeresult === "H") {
                 if (dict[game.hometeam] === undefined) {
-                    dict[game.hometeam] = {team: game.hometeam, victories: 1, draws: 0, losses: 0, points: 3};
+                    dict[game.hometeam] = {victories: 1, draws: 0, losses: 0, points: 3};
                 } else {
                     dict[game.hometeam].victories += 1;
                     dict[game.hometeam].points += 3;
                 }
 
                 if (dict[game.awayteam] === undefined) {
-                    dict[game.awayteam] = {team: game.awayteam, victories: 0, draws: 0, losses: 1, points: 0};
+                    dict[game.awayteam] = {victories: 0, draws: 0, losses: 1, points: 0};
                 } else {
                     dict[game.awayteam].losses += 1;
                 }
 
                 if (dicth[game.hometeam] === undefined) {
-                    dicth[game.hometeam] = {team: game.hometeam, victories: 1, draws: 0, losses: 0, points: 3};
+                    dicth[game.hometeam] = {victories: 1, draws: 0, losses: 0, points: 3};
                 } else {
                     dicth[game.hometeam].victories += 1;
                     dicth[game.hometeam].points += 3;
                 }
 
                 if (dicta[game.awayteam] === undefined) {
-                    dicta[game.awayteam] = {team: game.awayteam, victories: 0, draws: 0, losses: 1, points: 0};
+                    dicta[game.awayteam] = {victories: 0, draws: 0, losses: 1, points: 0};
                 } else {
                     dicta[game.awayteam].losses += 1;
                 }
 
             } else if (game.fulltimeresult === "D") {
                 if (dict[game.hometeam] === undefined) {
-                    dict[game.hometeam] = {team: game.hometeam, victories: 0, draws: 1, losses: 0, points: 1};
+                    dict[game.hometeam] = {victories: 0, draws: 1, losses: 0, points: 1};
                 } else {
                     dict[game.hometeam].draws += 1;
                     dict[game.hometeam].points += 1;
                 }
 
                 if (dict[game.awayteam] === undefined) {
-                    dict[game.awayteam] = {team: game.awayteam, victories: 0, draws: 1, losses: 0, points: 1};
+                    dict[game.awayteam] = {victories: 0, draws: 1, losses: 0, points: 1};
                 } else {
                     dict[game.awayteam].draws += 1;
                     dict[game.awayteam].points += 1;
                 }
 
                 if (dicth[game.hometeam] === undefined) {
-                    dicth[game.hometeam] = {team: game.hometeam, victories: 0, draws: 1, losses: 0, points: 1};
+                    dicth[game.hometeam] = {victories: 0, draws: 1, losses: 0, points: 1};
                 } else {
                     dicth[game.hometeam].draws += 1;
                     dicth[game.hometeam].points += 1;
                 }
 
                 if (dicta[game.awayteam] === undefined) {
-                    dicta[game.awayteam] = {team: game.awayteam, victories: 0, draws: 1, losses: 0, points: 1};
+                    dicta[game.awayteam] = {victories: 0, draws: 1, losses: 0, points: 1};
                 } else {
                     dicta[game.awayteam].draws += 1;
                     dicta[game.awayteam].points += 1;
@@ -178,26 +178,26 @@ export default function Home() {
 
             } else if (game.fulltimeresult === "A") {
                 if (dict[game.hometeam] === undefined) {
-                    dict[game.hometeam] = {team: game.hometeam, victories: 0, draws: 0, losses: 1, points: 0};
+                    dict[game.hometeam] = {victories: 0, draws: 0, losses: 1, points: 0};
                 } else {
                     dict[game.hometeam].losses += 1;
                 }
 
                 if (dict[game.awayteam] === undefined) {
-                    dict[game.awayteam] = {team: game.awayteam, victories: 1, draws: 0, losses: 0, points: 3};
+                    dict[game.awayteam] = {victories: 1, draws: 0, losses: 0, points: 3};
                 } else {
                     dict[game.awayteam].victories += 1;
                     dict[game.awayteam].points += 3;
                 }
 
                 if (dicth[game.hometeam] === undefined) {
-                    dicth[game.hometeam] = {team: game.hometeam, victories: 0, draws: 0, losses: 1, points: 0};
+                    dicth[game.hometeam] = {victories: 0, draws: 0, losses: 1, points: 0};
                 } else {
                     dicth[game.hometeam].losses += 1;
                 }
 
                 if (dicta[game.awayteam] === undefined) {
-                    dicta[game.awayteam] = {team: game.awayteam, victories: 1, draws: 0, losses: 0, points: 3};
+                    dicta[game.awayteam] = {victories: 1, draws: 0, losses: 0, points: 3};
                 } else {
                     dicta[game.awayteam].victories += 1;
                     dicta[game.awayteam].points += 3;
@@ -210,8 +210,8 @@ export default function Home() {
             const at = game.awayteam;
 
             if (dics[ht] === undefined) {
-                dics[ht] = {
-                    team: ht,
+                dics[ht] = [{
+                    jornada: 1,
                     goalscored: game.homescore,
                     goalsconceded: game.awayscore,
                     shots: game.homeshots,
@@ -221,22 +221,25 @@ export default function Home() {
                     fouls: game.homefouls,
                     yellows: game.homeyellows,
                     reds: game.homered
-                }
+                }]
             } else {
-                dics[ht].goalscored += game.homescore;
-                dics[ht].goalsconceded += game.awayscore;
-                dics[ht].shots += game.homeshots;
-                dics[ht].shotstarget += game.homeshotstarget;
-                dics[ht].shotswoodwork += game.homeshotswoodwork;
-                dics[ht].corners += game.homecorners;
-                dics[ht].fouls += game.homefouls;
-                dics[ht].yellows += game.homeyellows;
-                dics[ht].reds += game.homered;
+                dics[ht].push({
+                    jornada: dics[ht].length + 1,
+                    goalscored: game.homescore,
+                    goalsconceded: game.awayscore,
+                    shots: game.homeshots,
+                    shotstarget: game.homeshotstarget,
+                    shotswoodwork: game.homeshotswoodwork,
+                    corners: game.homecorners,
+                    fouls: game.homefouls,
+                    yellows: game.homeyellows,
+                    reds: game.homered
+                });
             }
 
             if (dicsh[ht] === undefined) {
-                dicsh[ht] = {
-                    team: ht,
+                dicsh[ht] = [{
+                    jornada: dics[ht].length,
                     goalscored: game.homescore,
                     goalsconceded: game.awayscore,
                     shots: game.homeshots,
@@ -246,22 +249,25 @@ export default function Home() {
                     fouls: game.homefouls,
                     yellows: game.homeyellows,
                     reds: game.homered
-                }
+                }]
             } else {
-                dicsh[ht].goalscored += game.homescore;
-                dicsh[ht].goalsconceded += game.awayscore;
-                dicsh[ht].shots += game.homeshots;
-                dicsh[ht].shotstarget += game.homeshotstarget;
-                dicsh[ht].shotswoodwork += game.homeshotswoodwork;
-                dicsh[ht].corners += game.homecorners;
-                dicsh[ht].fouls += game.homefouls;
-                dicsh[ht].yellows += game.homeyellows;
-                dicsh[ht].reds += game.homered;
+                dicsh[ht].push({
+                    jornada: dics[ht].length,
+                    goalscored: game.homescore,
+                    goalsconceded: game.awayscore,
+                    shots: game.homeshots,
+                    shotstarget: game.homeshotstarget,
+                    shotswoodwork: game.homeshotswoodwork,
+                    corners: game.homecorners,
+                    fouls: game.homefouls,
+                    yellows: game.homeyellows,
+                    reds: game.homered
+                });
             }
 
             if (dics[at] === undefined) {
-                dics[at] = {
-                    team: at,
+                dics[at] = [{
+                    jornada: 1,
                     goalscored: game.awayscore,
                     goalsconceded: game.homescore,
                     shots: game.awayshots,
@@ -271,22 +277,25 @@ export default function Home() {
                     fouls: game.awayfouls,
                     yellows: game.awayyellows,
                     reds: game.awayred
-                }
+                }]
             } else {
-                dics[at].goalscored += game.awayscore;
-                dics[at].goalsconceded += game.homescore;
-                dics[at].shots += game.awayshots;
-                dics[at].shotstarget += game.awayshotstarget;
-                dics[at].shotswoodwork += game.awayshotswoodwork;
-                dics[at].corners += game.awaycorners;
-                dics[at].fouls += game.awayfouls;
-                dics[at].yellows += game.awayyellows;
-                dics[at].reds += game.awayred;
+                dics[at].push({
+                    jornada: dics[at].length + 1,
+                    goalscored: game.awayscore,
+                    goalsconceded: game.homescore,
+                    shots: game.awayshots,
+                    shotstarget: game.awayshotstarget,
+                    shotswoodwork: game.awayshotswoodwork,
+                    corners: game.awaycorners,
+                    fouls: game.awayfouls,
+                    yellows: game.awayyellows,
+                    reds: game.awayred
+                });
             }
 
             if (dicsa[at] === undefined) {
-                dicsa[at] = {
-                    team: at,
+                dicsa[at] = [{
+                    jornada: dics[at].length,
                     goalscored: game.awayscore,
                     goalsconceded: game.homescore,
                     shots: game.awayshots,
@@ -296,17 +305,20 @@ export default function Home() {
                     fouls: game.awayfouls,
                     yellows: game.awayyellows,
                     reds: game.awayred
-                }
+                }]
             } else {
-                dicsa[at].goalscored += game.awayscore;
-                dicsa[at].goalsconceded += game.homescore;
-                dicsa[at].shots += game.awayshots;
-                dicsa[at].shotstarget += game.awayshotstarget;
-                dicsa[at].shotswoodwork += game.awayshotswoodwork;
-                dicsa[at].corners += game.awaycorners;
-                dicsa[at].fouls += game.awayfouls;
-                dicsa[at].yellows += game.awayyellows;
-                dicsa[at].reds += game.awayred;
+                dicsa[at].push({
+                    jornada: dics[at].length,
+                    goalscored: game.awayscore,
+                    goalsconceded: game.homescore,
+                    shots: game.awayshots,
+                    shotstarget: game.awayshotstarget,
+                    shotswoodwork: game.awayshotswoodwork,
+                    corners: game.awaycorners,
+                    fouls: game.awayfouls,
+                    yellows: game.awayyellows,
+                    reds: game.awayred
+                });
             }
 
             // Get Points for each jornada
@@ -355,17 +367,18 @@ export default function Home() {
         } = {};
 
         for (const [key, value] of Object.entries(dicp)) {
-            temp[key] = {
-                color: "",
-                results: [],
-                resultshome: [],
-                resultsaway: [],
-                stats: [],
-                statshome: [],
-                statsaway: [],
-                points: []
+            if (temp[key] === undefined) {
+                temp[key] = {
+                    color: "",
+                    results: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
+                    stats: [],
+                    statshome: [],
+                    statsaway: [],
+                    points: []
+                }
             }
-
             temp[key].points = value;
         }
 
@@ -374,9 +387,9 @@ export default function Home() {
             if (temp[key] === undefined) {
                 temp[key] = {
                     color: "",
-                    results: [],
-                    resultshome: [],
-                    resultsaway: [],
+                    results: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
                     stats: [],
                     statshome: [],
                     statsaway: [],
@@ -384,18 +397,18 @@ export default function Home() {
                 }
             }
 
-            temp[key].stats.push(value);
+            temp[key].stats = value;
 
-            stats.push(value);
+            setStats(value);
         }
 
         for (const [key, value] of Object.entries(dicsh)) {
             if (temp[key] === undefined) {
                 temp[key] = {
                     color: "",
-                    results: [],
-                    resultshome: [],
-                    resultsaway: [],
+                    results: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
                     stats: [],
                     statshome: [],
                     statsaway: [],
@@ -403,16 +416,16 @@ export default function Home() {
                 }
             }
 
-            temp[key].statshome.push(value);
+            temp[key].statshome = value;
         }
 
         for (const [key, value] of Object.entries(dicsa)) {
             if (temp[key] === undefined) {
                 temp[key] = {
                     color: "",
-                    results: [],
-                    resultshome: [],
-                    resultsaway: [],
+                    results: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
                     stats: [],
                     statshome: [],
                     statsaway: [],
@@ -420,7 +433,7 @@ export default function Home() {
                 }
             }
 
-            temp[key].statsaway.push(value);
+            temp[key].statsaway = value;
         }
 
         results.splice(0)
@@ -428,9 +441,9 @@ export default function Home() {
             if (temp[key] === undefined) {
                 temp[key] = {
                     color: "",
-                    results: [],
-                    resultshome: [],
-                    resultsaway: [],
+                    results: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
                     stats: [],
                     statshome: [],
                     statsaway: [],
@@ -438,7 +451,7 @@ export default function Home() {
                 }
             }
 
-            temp[key].results.push(value);
+            temp[key].results = value;
 
             results.push(value);
         }
@@ -447,9 +460,9 @@ export default function Home() {
             if (temp[key] === undefined) {
                 temp[key] = {
                     color: "",
-                    results: [],
-                    resultshome: [],
-                    resultsaway: [],
+                    results: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
                     stats: [],
                     statshome: [],
                     statsaway: [],
@@ -457,16 +470,16 @@ export default function Home() {
                 }
             }
 
-            temp[key].resultshome.push(value);
+            temp[key].resultshome = value;
         }
 
         for (const [key, value] of Object.entries(dicta)) {
             if (temp[key] === undefined) {
                 temp[key] = {
                     color: "",
-                    results: [],
-                    resultshome: [],
-                    resultsaway: [],
+                    results: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
                     stats: [],
                     statshome: [],
                     statsaway: [],
@@ -474,7 +487,7 @@ export default function Home() {
                 }
             }
 
-            temp[key].resultsaway.push(value);
+            temp[key].resultsaway = value;
         }
 
 
@@ -487,9 +500,9 @@ export default function Home() {
             if (temp[key] === undefined) {
                 temp[key] = {
                     color: "",
-                    results: [],
-                    resultshome: [],
-                    resultsaway: [],
+                    results: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
+                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
                     stats: [],
                     statshome: [],
                     statsaway: [],
@@ -555,8 +568,8 @@ export default function Home() {
             wins: d.victories,
             draws: d.draws,
             losses: d.losses,
-            label: d.team,
-            color: colors[d.team]
+            label: "Benfica",
+            color: colors["Benfica"]
         }
     }).filter(({label}) => selected.includes(label));
 

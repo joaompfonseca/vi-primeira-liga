@@ -25,31 +25,33 @@ const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
     const [selected, setSelected] = React.useState<string[]>([]);
     const [rows, setRows] = React.useState<Row[]>([]);
 
-    const [results, setResults] = React.useState<VictoryDrawLoss[]>([]);
-
     useEffect(() => {
 
-        let temp: VictoryDrawLoss[] = [];
+        let temp: { [id: string]: VictoryDrawLoss } = {};
 
         for (const [key, value] of Object.entries(data)) {
-            temp.push(value.results[0]);
+            temp[key] = value.results;
         }
 
-        temp.sort((a, b) => {
-            return b.points - a.points;
+        let sortable: [string, VictoryDrawLoss][] = [];
+
+        for (const [key, value] of Object.entries(temp)) {
+            sortable.push([key, value]);
+        }
+
+        sortable.sort((a, b) => {
+            return b[1].points - a[1].points;
         });
 
-        console.log(temp);
-
-        setRows(() => temp.map((e, i) => {
+        setRows(() => sortable.map((e, i) => {
             return {
-                id: e.team,
-                name: e.team,
-                victories: e.victories,
-                draws: e.draws,
-                losses: e.losses,
-                points: e.points,
-                color: data[e.team].color
+                id: e[0],
+                name: e[0],
+                victories: e[1].victories,
+                draws: e[1].draws,
+                losses: e[1].losses,
+                points: e[1].points,
+                color: data[e[0]].color
             }
         }));
     }, []);

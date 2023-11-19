@@ -1,5 +1,5 @@
 export interface Stat {
-    team: string;
+    jornada: number;
     goalscored: number;
     goalsconceded: number;
     shots: number;
