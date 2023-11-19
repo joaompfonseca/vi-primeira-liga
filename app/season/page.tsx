@@ -689,8 +689,8 @@ export default function Home() {
     // For each match
     const bpXScale = d3.scaleBand<number>()
         .domain((bpData.length > 0) ? d3.range(bpData[0].data.length) : d3.range(0))
-        .range([0, 10000])
-        .padding(0.1);
+        .range([0, 10000*bpData.length])
+        .paddingInner(0.1);
 
     const bpYScale = d3.scaleLinear()
         .domain([
@@ -699,7 +699,7 @@ export default function Home() {
                 max(bpData, d => max(d.data, (p) => max(p, (q) => q.value))) as number
                 : 10
         ])
-        .range([0, 250]);
+        .range([0, 300]);
 
     console.log(bpData)
 
@@ -711,7 +711,7 @@ export default function Home() {
                     {label: "Temporada", link: "/season"},
                 ]}
             />
-            <Grid container padding={2} height={"150vh"}> {/*TODO: change this height*/}
+            <Grid container padding={2} height={"200vh"}> {/*TODO: change this height*/}
                 <Grid item xs={4} padding={2}>
                     {info !== undefined && Object.keys(info).length &&
                         <MyTable

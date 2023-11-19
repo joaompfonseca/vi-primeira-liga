@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import {BarItem} from "@/app/components/BarItem";
 import {AxisBottom} from "@/app/components/AxisBottom";
 import {AxisLeft} from "@/app/components/AxisLeft"; // we will need d3.js
+import { BarLabel } from "./BarLabel";
 
 type BarplotProps = {
     width: number | string;
@@ -19,20 +20,41 @@ export const Barplot = ({width, height, xScale, yScale, ySpacing, data}: Barplot
     const allShapes = [];
     if (data !== undefined && data.length > 0 && data[0].data.length > 0) {
         const numberOfMatches = data[0].data.length;
+        // Match labels
+        xScale.domain().forEach((i) => {
+            allShapes.push(<BarLabel
+                key={i}
+                name={"Jornada " + (i + 1)}
+                fontSize={15}
+                fontWeight={700}
+                x={xScale(i) as number + xScale.bandwidth() / 2}
+                y={yScale.range()[1] + 125}
+            />);
+        });
         for (let i = 0; i < numberOfMatches; i++) {
             const xGroupScale = d3.scaleBand()
                 .domain(data.map((d) => d.group))
                 .range([0, xScale.bandwidth()])
-                .padding(0.05);
+                .padding(0.05)
+            // Group labels
+            xGroupScale.domain().forEach((group, j) => {
+                allShapes.push(<BarLabel
+                    key={i + group + j}
+                    name={group}
+                    fontSize={15}
+                    fontWeight={400}
+                    x={xScale(i) as number + xGroupScale(group)! as number + xGroupScale.bandwidth() / 2}
+                    y={yScale.range()[1] + 100}
+                />);
+            });
             for (let d of data) {
                 const xStatScale = d3.scaleBand()
                     .domain(d.data[i].map((stat) => stat.label))
-                    .range([0, xGroupScale.bandwidth()])
-                    .padding(0.05);
+                    .range([0, xGroupScale.bandwidth()]);
                 const match = d.data[i];
                 allShapes.push(match.map((stat) => {
                     return (<BarItem
-                        key={d.group + i + stat.label}
+                        key={i + d.group + stat.label}
                         name={stat.label}
                         value={stat.value}
                         barHeight={yScale(stat.value)}
