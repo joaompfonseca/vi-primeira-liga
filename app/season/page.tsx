@@ -13,6 +13,7 @@ import {max} from "d3";
 import {ParallelCoordinate} from "@/app/components/ParallelCoordinatesChart";
 import {Info} from "../structs/Info";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
+import {Barplot} from "@/app/components/Barplot";
 
 export default function Home() {
 
@@ -530,10 +531,10 @@ export default function Home() {
             temp[key].color = value;
         }
 
-        let temp2: {[id: string]: number} = {};
+        let temp2: { [id: string]: number } = {};
 
         for (let key in info) {
-            temp2[key] = info[key].points[info[key].points.length-1].points;
+            temp2[key] = info[key].points[info[key].points.length - 1].points;
         }
 
         // sort temp2 by points
@@ -545,10 +546,10 @@ export default function Home() {
             return b[1] - a[1];
         });
 
-        for(let i = 0; i < sortable.length; i++){
+        for (let i = 0; i < sortable.length; i++) {
             let key = sortable[i][0];
             let value = sortable[i][1];
-            temp[key].position = i+1;
+            temp[key].position = i + 1;
         }
 
         setInfo(temp);
@@ -601,7 +602,7 @@ export default function Home() {
 
     const pccData = Object.entries(info).map(([key, value]) => {
         return {
-            position: 1, // TODO: Alterar para posição na temporada
+            position: value.position,
             points: value.results.points,
             wins: value.results.victories,
             draws: value.results.draws,
@@ -662,6 +663,46 @@ export default function Home() {
         losses: 2
     }
 
+    /*
+    Bar Plot Stats
+     */
+
+    const bpData = Object.entries(info)
+        .map(([key, value]) => {
+            return {
+                group: key,
+                data: value.stats.map((stat) => {
+                    return Object.entries(stat).map(([statKey, statValue]) => {
+                        return {
+                            label: statKey,
+                            value: statValue as number,
+                            color: value.color // TODO: change to stat color
+                        }
+                    })
+                        .filter(({label}) => label !== "jornada") // TODO: filter based on selected stats
+                })
+            };
+        })
+        .sort((a, b) => info[a.group].position - info[b.group].position)
+        .filter(({group}) => selected.includes(group));
+
+    // For each match
+    const bpXScale = d3.scaleBand<number>()
+        .domain((bpData.length > 0) ? d3.range(bpData[0].data.length) : d3.range(0))
+        .range([0, 10000])
+        .padding(0.1);
+
+    const bpYScale = d3.scaleLinear()
+        .domain([
+            0,
+            (bpData.length > 0) ?
+                max(bpData, d => max(d.data, (p) => max(p, (q) => q.value))) as number
+                : 10
+        ])
+        .range([0, 250]);
+
+    console.log(bpData)
+
     return (
         <>
             <ResponsiveAppBar
@@ -670,7 +711,7 @@ export default function Home() {
                     {label: "Temporada", link: "/season"},
                 ]}
             />
-            <Grid container padding={2}>
+            <Grid container padding={2} height={"150vh"}> {/*TODO: change this height*/}
                 <Grid item xs={4} padding={2}>
                     {info !== undefined && Object.keys(info).length &&
                         <MyTable
@@ -717,6 +758,15 @@ export default function Home() {
                         </Select>
                     </Grid>
                     <Grid item xs={12}>
+                        <Typography variant={"h5"}>Partidas</Typography>
+                        <Barplot
+                            width={"100%"}
+                            height={"100%"}
+                            xScale={bpXScale}
+                            yScale={bpYScale}
+                            ySpacing={1}
+                            data={bpData}
+                        ></Barplot>
                     </Grid>
                 </Grid>
             </Grid>
