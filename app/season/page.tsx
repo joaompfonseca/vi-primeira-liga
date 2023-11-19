@@ -7,11 +7,12 @@ import {VictoryDrawLoss} from "@/app/structs/VictoryDrawLoss";
 import MyTable from "@/app/components/Table";
 import {Stat} from "@/app/structs/Stat";
 import {Matchday} from "@/app/structs/Matchday";
-import {Grid, Typography} from "@mui/material";
+import {Grid, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 import {LineChart} from "@/app/components/LineChart";
 import {max} from "d3";
 import {ParallelCoordinate} from "@/app/components/ParallelCoordinatesChart";
 import {Info} from "../structs/Info";
+import ResponsiveAppBar from "../components/ResponsiveAppBar";
 
 export default function Home() {
 
@@ -25,6 +26,14 @@ export default function Home() {
     }>({});
 
     const [info, setInfo] = React.useState<{ [id: string]: Info }>({});
+
+    /* Type of match stats */
+
+    const [typeMatchStats, setTypeMatchStats] = React.useState<string>("all");
+
+    const changeTypeMatchStats = (event: SelectChangeEvent) => {
+        setTypeMatchStats(event.target.value as string);
+    }
 
     /*
     Color palette
@@ -625,40 +634,63 @@ export default function Home() {
     }
 
     return (
-        <Grid container padding={2}>
-            <Grid item xs={4} padding={2}>
-                {info !== undefined && Object.keys(info).length &&
-                    <MyTable
-                        data={info}
-                        updateSelected={updateSelected}/>
-                }
-            </Grid>
-            <Grid container xs={8} padding={2}>
-                <Grid item xs={12}>
-                    <Typography variant={"h5"}>Evolução de Pontos por jornada</Typography>
-                    <LineChart
-                        width={"100%"}
-                        height={"100%"}
-                        xScale={ppjXScale}
-                        yScale={ppjYScale}
-                        xSpacing={1}
-                        ySpacing={5}
-                        data={ppjData}
-                    ></LineChart>
+        <>
+            <ResponsiveAppBar
+                pages={[
+                    {label: "Tudo", link: "/"},
+                    {label: "Temporada", link: "/season"},
+                ]}
+            />
+            <Grid container padding={2}>
+                <Grid item xs={4} padding={2}>
+                    {info !== undefined && Object.keys(info).length &&
+                        <MyTable
+                            data={info}
+                            updateSelected={updateSelected}/>
+                    }
                 </Grid>
-                <Grid item xs={12}>
-                    <Typography variant={"h5"}>Parallel Coordinates Plot</Typography>
-                    <ParallelCoordinate
-                        width={"100%"}
-                        height={"100%"}
-                        xScale={pccXScale}
-                        yScales={pccYScales}
-                        ySpacings={pccYSpacings}
-                        data={pccData}
-                        variables={pccVars}
-                    ></ParallelCoordinate>
+                <Grid container xs={8} padding={2}>
+                    <Grid item xs={12}>
+                        <Typography variant={"h5"}>Evolução de Pontos por jornada</Typography>
+                        <LineChart
+                            width={"100%"}
+                            height={"100%"}
+                            xScale={ppjXScale}
+                            yScale={ppjYScale}
+                            xSpacing={1}
+                            ySpacing={5}
+                            data={ppjData}
+                        ></LineChart>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant={"h5"}>Parallel Coordinates Plot</Typography>
+                        <ParallelCoordinate
+                            width={"100%"}
+                            height={"100%"}
+                            xScale={pccXScale}
+                            yScales={pccYScales}
+                            ySpacings={pccYSpacings}
+                            data={pccData}
+                            variables={pccVars}
+                        ></ParallelCoordinate>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Typography>Estatísticas das partidas</Typography>
+                    </Grid>
+                    <Grid item xs={10}>
+                        <Select
+                            value={typeMatchStats}
+                            onChange={changeTypeMatchStats}
+                        >
+                            <MenuItem value={"all"}>Todas</MenuItem>
+                            <MenuItem value={"home"}>Casa</MenuItem>
+                            <MenuItem value={"away"}>Fora</MenuItem>
+                        </Select>
+                    </Grid>
+                    <Grid item xs={12}>
+                    </Grid>
                 </Grid>
             </Grid>
-        </Grid>
+        </>
     );
 }
