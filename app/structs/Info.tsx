@@ -11,4 +11,5 @@ export interface Info{
     statshome: Stat[];
     statsaway: Stat[];
     points: Matchday[];
+    position: number;
 }

@@ -385,7 +385,8 @@ export default function Home() {
                     stats: [],
                     statshome: [],
                     statsaway: [],
-                    points: []
+                    points: [],
+                    position: 0
                 }
             }
             temp[key].points = value;
@@ -402,7 +403,8 @@ export default function Home() {
                     stats: [],
                     statshome: [],
                     statsaway: [],
-                    points: []
+                    points: [],
+                    position: 0
                 }
             }
 
@@ -421,7 +423,8 @@ export default function Home() {
                     stats: [],
                     statshome: [],
                     statsaway: [],
-                    points: []
+                    points: [],
+                    position: 0
                 }
             }
 
@@ -438,7 +441,8 @@ export default function Home() {
                     stats: [],
                     statshome: [],
                     statsaway: [],
-                    points: []
+                    points: [],
+                    position: 0
                 }
             }
 
@@ -456,7 +460,8 @@ export default function Home() {
                     stats: [],
                     statshome: [],
                     statsaway: [],
-                    points: []
+                    points: [],
+                    position: 0
                 }
             }
 
@@ -475,7 +480,8 @@ export default function Home() {
                     stats: [],
                     statshome: [],
                     statsaway: [],
-                    points: []
+                    points: [],
+                    position: 0
                 }
             }
 
@@ -492,7 +498,8 @@ export default function Home() {
                     stats: [],
                     statshome: [],
                     statsaway: [],
-                    points: []
+                    points: [],
+                    position: 0
                 }
             }
 
@@ -515,11 +522,33 @@ export default function Home() {
                     stats: [],
                     statshome: [],
                     statsaway: [],
-                    points: []
+                    points: [],
+                    position: 0
                 }
             }
 
             temp[key].color = value;
+        }
+
+        let temp2: {[id: string]: number} = {};
+
+        for (let key in info) {
+            temp2[key] = info[key].points[info[key].points.length-1].points;
+        }
+
+        // sort temp2 by points
+        let sortable: [string, number][] = [];
+        for (let key in temp2) {
+            sortable.push([key, temp2[key]]);
+        }
+        sortable.sort((a, b) => {
+            return b[1] - a[1];
+        });
+
+        for(let i = 0; i < sortable.length; i++){
+            let key = sortable[i][0];
+            let value = sortable[i][1];
+            temp[key].position = i+1;
         }
 
         setInfo(temp);
