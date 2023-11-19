@@ -589,14 +589,14 @@ export default function Home() {
 
     const pccYScales = {
         position: d3.scaleLinear()
-            .domain([18, 1]) // TODO: Alterar para Número de equipas na temporada
-            .range([250, 18]),
+            .domain([Object.keys(info).length, 1])
+            .range([250, Object.keys(info).length]),
         points: d3.scaleLinear()
             .domain([
                 0,
                 (pccData.length > 0) ?
                     max(pccData, d => d.points) as number
-                    : 3 * 2 * 18 // TODO: Alterar para 3 pontos*2 jogos*Número de equipas na temporada)
+                    : 3 * 2 * Object.keys(info).length
             ])
             .range([250, 0]),
         wins: d3.scaleLinear()
@@ -604,7 +604,7 @@ export default function Home() {
                 0,
                 (pccData.length > 0) ?
                     max(pccData, d => d.wins) as number
-                    : 2 * 18 // TODO: Alterar para 2*Número de equipas na temporada
+                    : 2 * Object.keys(info).length
             ])
             .range([250, 0]),
         draws: d3.scaleLinear()
@@ -612,7 +612,7 @@ export default function Home() {
                 0,
                 (pccData.length > 0) ?
                     max(pccData, d => d.draws) as number
-                    : 2 * 18 // TODO: Alterar para 2*Número de equipas na temporada
+                    : 2 * Object.keys(info).length
             ])
             .range([250, 0]),
         losses: d3.scaleLinear()
@@ -620,7 +620,7 @@ export default function Home() {
                 0,
                 (pccData.length > 0) ?
                     max(pccData, d => d.losses) as number
-                    : 2 * 18 // TODO: Alterar para 2*Número de equipas na temporada
+                    : 2 * Object.keys(info).length
             ])
             .range([250, 0])
     };
