@@ -667,11 +667,13 @@ export default function Home() {
     Bar Plot Stats
      */
 
+    const typeMatchStatsKey = (typeMatchStats === "home") ? "statshome" : (typeMatchStats === "away") ? "statsaway" : "stats";
+
     const bpData = Object.entries(info)
         .map(([key, value]) => {
             return {
                 group: key,
-                data: value.stats.map((stat) => {
+                data: value[typeMatchStatsKey].map((stat) => {
                     return Object.entries(stat).map(([statKey, statValue]) => {
                         return {
                             label: statKey,
@@ -679,7 +681,7 @@ export default function Home() {
                             color: value.color // TODO: change to stat color
                         }
                     })
-                        .filter(({label}) => label !== "jornada") // TODO: filter based on selected stats
+                    //.filter(({label}) => label !== "jornada") // TODO: filter based on selected stats
                 })
             };
         })
@@ -688,8 +690,11 @@ export default function Home() {
 
     // For each match
     const bpXScale = d3.scaleBand<number>()
-        .domain((bpData.length > 0) ? d3.range(bpData[0].data.length) : d3.range(0))
-        .range([0, 10000*bpData.length])
+        .domain(
+            (bpData.length > 0)
+                ? d3.range(bpData[0].data.length)
+                : d3.range(0))
+        .range([0, 10000 * bpData.length])
         .paddingInner(0.1);
 
     const bpYScale = d3.scaleLinear()

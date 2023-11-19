@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import {BarItem} from "@/app/components/BarItem";
 import {AxisBottom} from "@/app/components/AxisBottom";
 import {AxisLeft} from "@/app/components/AxisLeft"; // we will need d3.js
-import { BarLabel } from "./BarLabel";
+import {BarLabel} from "./BarLabel";
 
 type BarplotProps = {
     width: number | string;
@@ -15,23 +15,21 @@ type BarplotProps = {
 
 export const Barplot = ({width, height, xScale, yScale, ySpacing, data}: BarplotProps) => {
 
-    const yPixelsPerTick = Math.abs(ySpacing*(yScale.range()[1] - yScale.range()[0]) / (yScale.domain()[1] - yScale.domain()[0]));
+    const yPixelsPerTick = Math.abs(ySpacing * (yScale.range()[1] - yScale.range()[0]) / (yScale.domain()[1] - yScale.domain()[0]));
 
     const allShapes = [];
     if (data !== undefined && data.length > 0 && data[0].data.length > 0) {
         const numberOfMatches = data[0].data.length;
-        // Match labels
-        xScale.domain().forEach((i) => {
+        for (let i = 0; i < numberOfMatches; i++) {
+            // Match labels
             allShapes.push(<BarLabel
                 key={i}
-                name={"Jornada " + (i + 1)}
+                name={"Jornada " + (i+1)}
                 fontSize={15}
                 fontWeight={700}
                 x={xScale(i) as number + xScale.bandwidth() / 2}
                 y={yScale.range()[1] + 125}
             />);
-        });
-        for (let i = 0; i < numberOfMatches; i++) {
             const xGroupScale = d3.scaleBand()
                 .domain(data.map((d) => d.group))
                 .range([0, xScale.bandwidth()])
