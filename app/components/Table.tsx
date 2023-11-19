@@ -126,14 +126,13 @@ const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
                             >
                                 <TableCell
                                     padding="checkbox"
-                                    style={{
-                                        width: '3%',
-                                        backgroundColor: hexToRGBA(row.color, isItemSelected ? 1 : 0.5)
-                                    }}
                                 >
                                     <Checkbox
                                         checked={isItemSelected}
                                         onChange={(event) => handleClick(event, row.id)}
+                                        style={{
+                                            backgroundColor: hexToRGBA(row.color, isItemSelected ? 1 : 0.5)
+                                        }}
                                     />
                                 </TableCell>
                                 <TableCell width="10%">{row.name}</TableCell>

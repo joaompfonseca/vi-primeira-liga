@@ -12,6 +12,7 @@ import {LineChart} from "@/app/components/LineChart";
 import {max} from "d3";
 import {ParallelCoordinate} from "@/app/components/ParallelCoordinatesChart";
 import {Info} from "../structs/Info";
+import ResponsiveAppBar from "../components/ResponsiveAppBar";
 
 export default function Home() {
 
@@ -612,40 +613,48 @@ export default function Home() {
     }
 
     return (
-        <Grid container padding={2}>
-            <Grid item xs={4} padding={2}>
-                {info !== undefined && Object.keys(info).length &&
-                    <MyTable
-                        data={info}
-                        updateSelected={updateSelected}/>
-                }
-            </Grid>
-            <Grid container xs={8} padding={2}>
-                <Grid item xs={12}>
-                    <Typography variant={"h5"}>Evolução de Pontos por jornada</Typography>
-                    <LineChart
-                        width={"100%"}
-                        height={"100%"}
-                        xScale={ppjXScale}
-                        yScale={ppjYScale}
-                        xSpacing={1}
-                        ySpacing={5}
-                        data={ppjData}
-                    ></LineChart>
+        <>
+            <ResponsiveAppBar
+                pages={[
+                    {label: "Tudo", link: "/"},
+                    {label: "Temporada", link: "/season"},
+                ]}
+            />
+            <Grid container padding={2}>
+                <Grid item xs={4} padding={2}>
+                    {info !== undefined && Object.keys(info).length &&
+                        <MyTable
+                            data={info}
+                            updateSelected={updateSelected}/>
+                    }
                 </Grid>
-                <Grid item xs={12}>
-                    <Typography variant={"h5"}>Parallel Coordinates Plot</Typography>
-                    <ParallelCoordinate
-                        width={"100%"}
-                        height={"100%"}
-                        xScale={pccXScale}
-                        yScales={pccYScales}
-                        ySpacings={pccYSpacings}
-                        data={pccData}
-                        variables={pccVars}
-                    ></ParallelCoordinate>
+                <Grid container xs={8} padding={2}>
+                    <Grid item xs={12}>
+                        <Typography variant={"h5"}>Evolução de Pontos por jornada</Typography>
+                        <LineChart
+                            width={"100%"}
+                            height={"100%"}
+                            xScale={ppjXScale}
+                            yScale={ppjYScale}
+                            xSpacing={1}
+                            ySpacing={5}
+                            data={ppjData}
+                        ></LineChart>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant={"h5"}>Parallel Coordinates Plot</Typography>
+                        <ParallelCoordinate
+                            width={"100%"}
+                            height={"100%"}
+                            xScale={pccXScale}
+                            yScales={pccYScales}
+                            ySpacings={pccYSpacings}
+                            data={pccData}
+                            variables={pccVars}
+                        ></ParallelCoordinate>
+                    </Grid>
                 </Grid>
             </Grid>
-        </Grid>
+        </>
     );
 }
