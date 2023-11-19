@@ -570,15 +570,15 @@ export default function Home() {
 
     const pccVars = ["position", "points", "wins", "losses", "draws"];
 
-    const pccData = results.map((d, i) => {
+    const pccData = Object.entries(info).map(([key, value]) => {
         return {
-            position: i + 1,
-            points: d.points,
-            wins: d.victories,
-            draws: d.draws,
-            losses: d.losses,
-            label: "Benfica",
-            color: colors["Benfica"]
+            position: 1, // TODO: Alterar para posição na temporada
+            points: value.results.points,
+            wins: value.results.victories,
+            draws: value.results.draws,
+            losses: value.results.losses,
+            label: key,
+            color: value.color
         }
     }).filter(({label}) => selected.includes(label));
 
