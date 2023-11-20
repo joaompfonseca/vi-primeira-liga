@@ -53,7 +53,7 @@ export default function Home() {
 
     /* Selected stats */
 
-    const [selectedStats, setSelectedStats] = React.useState<string[]>();
+    const [selectedStats, setSelectedStats] = React.useState<string[]>([]);
 
     const updateSelectedStats = (event: ChangeEvent<HTMLInputElement>) => {
         const stat = event.target.value;
