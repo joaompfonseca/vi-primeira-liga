@@ -24,6 +24,7 @@ import {ParallelCoordinate} from "@/app/components/ParallelCoordinatesChart";
 import {Info} from "../structs/Info";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
 import {Barplot} from "@/app/components/Barplot";
+import LoadingComponent from "@/app/components/LoadingComponent";
 
 export default function Home() {
 
@@ -589,8 +590,6 @@ export default function Home() {
         setSelected(selected);
     }
 
-    console.log(info);
-
 
     /*
     Points per match day
@@ -749,7 +748,7 @@ export default function Home() {
     const bpAllData = bpData
         .map(({group, data}) => {
             // Calculate sum of values for each label
-            const sumOfValues = data.reduce((acc: {[key: string]: number}, item) => {
+            const sumOfValues = data.reduce((acc: { [key: string]: number }, item) => {
                 item.forEach(({label, value}) => {
                     acc[label] = (acc[label] || 0) + value;
                 });
@@ -789,6 +788,19 @@ export default function Home() {
         ])
         .range([0, bpAllHeight]);
 
+    if (info === undefined || Object.keys(info).length === 0) {
+        return (
+            <>
+                <ResponsiveAppBar
+                    pages={[
+                        {label: "Tudo", link: "/"},
+                        {label: "Temporada", link: "/season"},
+                    ]}
+                />
+                <LoadingComponent/>
+            </>
+        )
+    }
     return (
         <>
             <ResponsiveAppBar
@@ -799,7 +811,7 @@ export default function Home() {
             />
             <Grid container padding={2}>
                 <Grid item xs={4} padding={2}>
-                    {info !== undefined && Object.keys(info).length &&
+                    {Object.keys(info).length &&
                         <MyTable
                             data={info}
                             updateSelected={updateSelected}/>
