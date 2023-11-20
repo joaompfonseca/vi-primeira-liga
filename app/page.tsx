@@ -29,7 +29,7 @@ export default function Home() {
                 </Grid>
                 <Grid item xs={12} paddingY={1}>
                     <Typography variant="body1" textAlign={"justify"}>
-                        Step into the thrilling world of Portugal's top-flight football league, where every match
+                        Step into the thrilling world of Portugal&apos;s top-flight football league, where every match
                         unfolds a
                         saga of skill, passion, and unyielding determination. Our platform stands as a timeless archive,
                         chronicling the historic moments, standout performances, and statistical wonders that have
@@ -48,9 +48,9 @@ export default function Home() {
                 </Grid>
                 <Grid item xs={12} paddingY={1}>
                     <Typography variant="body1" textAlign={"justify"}>
-                        Whether you're a die-hard fan seeking statistical marvels, an enthusiast exploring the evolution
+                        Whether you&apos;re a die-hard fan seeking statistical marvels, an enthusiast exploring the evolution
                         of
-                        tactics, or a curious mind delving into the league's rich history, our platform is your gateway
+                        tactics, or a curious mind delving into the league&apos;s rich history, our platform is your gateway
                         to
                         the captivating world of Primeira Liga football.
                     </Typography>
@@ -59,7 +59,7 @@ export default function Home() {
                     <Typography variant="body1" textAlign={"justify"}>
                         Join us as we celebrate the spirit of the beautiful game, where each click unlocks a treasure
                         trove
-                        of stats, stories, and the everlasting magic of football's finest moments. Let the journey
+                        of stats, stories, and the everlasting magic of football&apos;s finest moments. Let the journey
                         begin!
                     </Typography>
                 </Grid>
