@@ -92,6 +92,14 @@ export default function Home() {
         "Maritimo": "#164A00",
         "Pacos Ferreira": "#FBFF81",
         "Santa Clara": "#FF4E01",
+        "Moreirense": "#025805",
+        "Tondela": "#FFED00",
+        "Belenenses": "#008EFF",
+        "Farense": "#000000",
+        "Nacional": "#FFD700",
+        "Setubal": "#31FF00",
+        "Aves": "#D31202",
+        "Feirense": "#02B7D3",
     };
 
     useEffect(() => {
