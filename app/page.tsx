@@ -1,10 +1,40 @@
+"use client";
+
 import React from "react";
 import ResponsiveAppBar from './components/ResponsiveAppBar';
 import {ButtonGroup, Grid, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import Link from "next/link";
+import * as d3 from "d3";
 
 export default function Home() {
+
+    const [data, setData] = React.useState<{[id:string] : {team:string,points:number}[]}>({});
+
+    const fetchdata = async () => {
+        await d3.csv(`total.csv`)
+            .then(data => {
+                let seasons: {[id:string] : {team:string,points:number}[]} = {};
+                data.map((e, i) => {
+                        if (seasons[e.Season] === undefined) {
+                            seasons[e.Season] = [{"team": e.Team, "points": parseInt(e.Points)}];
+                        }
+                        else {
+                            seasons[e.Season].push({"team": e.Team, "points": parseInt(e.Points)});
+                        }
+                    }
+                );
+                setData(seasons);
+            }
+        );
+    }
+
+    React.useEffect(() => {
+        fetchdata();
+    }, []);
+
+    console.log(data);
+
     return (
         <div style={{minHeight: "90vh"}}>
             <ResponsiveAppBar
