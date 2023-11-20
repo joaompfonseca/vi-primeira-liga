@@ -95,14 +95,16 @@ export default function Home() {
     };
 
     useEffect(() => {
+        setIsLoading(true)
         fetchdata();
-        if (!isLoading) {
-            treatData();
-        }
-    }, [isLoading, searchParams.get("y")]);
+    }, [searchParams.get("y")]);
+
+    useEffect(() => {
+        treatData();
+        setIsLoading(false);
+    }, [data]);
 
     const fetchdata = async () => {
-        setIsLoading(true)
         await d3.csv(`${searchParams.get("y")}.csv`)
             .then(data => {
                 let games: Game[] = [];
@@ -129,11 +131,12 @@ export default function Home() {
                     games = [...games, game];
                 });
                 setData(() => games);
+                setSelected([]);
+                setSelectedStats([]);
             })
             .catch(err => {
                 console.log(err);
             });
-        setIsLoading(false);
     }
 
     const treatData = () => {
@@ -698,7 +701,7 @@ export default function Home() {
         ])
         .range([0, bpAllHeight]);
 
-    if (info === undefined || Object.keys(info).length === 0) {
+    if (isLoading) {
         return (
             <>
                 <ResponsiveAppBar
