@@ -48,9 +48,11 @@ export default function Home() {
                 </Grid>
                 <Grid item xs={12} paddingY={1}>
                     <Typography variant="body1" textAlign={"justify"}>
-                        Whether you&apos;re a die-hard fan seeking statistical marvels, an enthusiast exploring the evolution
+                        Whether you&apos;re a die-hard fan seeking statistical marvels, an enthusiast exploring the
+                        evolution
                         of
-                        tactics, or a curious mind delving into the league&apos;s rich history, our platform is your gateway
+                        tactics, or a curious mind delving into the league&apos;s rich history, our platform is your
+                        gateway
                         to
                         the captivating world of Primeira Liga football.
                     </Typography>
@@ -68,6 +70,7 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
+                        component="a"
                     >
                         <Link href={"/season?y=22-23"}>
                             Season 22/23
@@ -79,6 +82,7 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
+                        component="a"
                     >
                         <Link href={"/season?y=21-22"}>
                             Season 21/22
@@ -90,6 +94,7 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
+                        component="a"
                     >
                         <Link href={"/season?y=20-21"}>
                             Season 20/21
@@ -101,6 +106,7 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
+                        component="a"
                     >
                         <Link href={"/season?y=19-20"}>
                             Season 19/20
@@ -112,6 +118,7 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
+                        component="a"
                     >
                         <Link href={"/season?y=18-19"}>
                             Season 18/19
@@ -123,6 +130,7 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
+                        component="a"
                     >
                         <Link href={"/season?y=17-18"}>
                             Season 17/18
