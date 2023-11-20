@@ -428,19 +428,6 @@ export default function Home() {
 
 
         for (const [key, value] of Object.entries(dics)) {
-            if (temp[key] === undefined) {
-                temp[key] = {
-                    color: "",
-                    results: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
-                    stats: [],
-                    statshome: [],
-                    statsaway: [],
-                    points: [],
-                    position: 0
-                }
-            }
 
             temp[key].stats = value;
 
@@ -448,56 +435,17 @@ export default function Home() {
         }
 
         for (const [key, value] of Object.entries(dicsh)) {
-            if (temp[key] === undefined) {
-                temp[key] = {
-                    color: "",
-                    results: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
-                    stats: [],
-                    statshome: [],
-                    statsaway: [],
-                    points: [],
-                    position: 0
-                }
-            }
 
             temp[key].statshome = value;
         }
 
         for (const [key, value] of Object.entries(dicsa)) {
-            if (temp[key] === undefined) {
-                temp[key] = {
-                    color: "",
-                    results: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
-                    stats: [],
-                    statshome: [],
-                    statsaway: [],
-                    points: [],
-                    position: 0
-                }
-            }
 
             temp[key].statsaway = value;
         }
 
         results.splice(0)
         for (const [key, value] of Object.entries(dict)) {
-            if (temp[key] === undefined) {
-                temp[key] = {
-                    color: "",
-                    results: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
-                    stats: [],
-                    statshome: [],
-                    statsaway: [],
-                    points: [],
-                    position: 0
-                }
-            }
 
             temp[key].results = value;
 
@@ -505,38 +453,10 @@ export default function Home() {
         }
 
         for (const [key, value] of Object.entries(dicth)) {
-            if (temp[key] === undefined) {
-                temp[key] = {
-                    color: "",
-                    results: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
-                    stats: [],
-                    statshome: [],
-                    statsaway: [],
-                    points: [],
-                    position: 0
-                }
-            }
-
             temp[key].resultshome = value;
         }
 
         for (const [key, value] of Object.entries(dicta)) {
-            if (temp[key] === undefined) {
-                temp[key] = {
-                    color: "",
-                    results: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
-                    stats: [],
-                    statshome: [],
-                    statsaway: [],
-                    points: [],
-                    position: 0
-                }
-            }
-
             temp[key].resultsaway = value;
         }
 
@@ -547,27 +467,15 @@ export default function Home() {
         });
 
         for (const [key, value] of Object.entries(colors)) {
-            if (temp[key] === undefined) {
-                temp[key] = {
-                    color: "",
-                    results: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultshome: {victories: 0, draws: 0, losses: 0, points: 0},
-                    resultsaway: {victories: 0, draws: 0, losses: 0, points: 0},
-                    stats: [],
-                    statshome: [],
-                    statsaway: [],
-                    points: [],
-                    position: 0
-                }
+            if (Object.keys(temp).includes(key)) {
+                temp[key].color = value;
             }
-
-            temp[key].color = value;
         }
 
         let temp2: { [id: string]: number } = {};
 
-        for (let key in info) {
-            temp2[key] = info[key].points[info[key].points.length - 1].points;
+        for (let key in temp) {
+            temp2[key] = temp[key].points[temp[key].points.length - 1].points;
         }
 
         // sort temp2 by points
