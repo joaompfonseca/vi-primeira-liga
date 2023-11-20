@@ -39,7 +39,9 @@ export default function Home() {
         [id: string]: Matchday[]
     }>({});
 
-    const [info, setInfo] = React.useState<{ [id: string]: Info }>({});
+    const [info, setInfo] = React.useState<{
+        [id: string]: Info
+    }>({});
 
     /* Type of match stats */
 
@@ -73,7 +75,9 @@ export default function Home() {
     Color palette
      */
 
-    const colors: { [id: string]: string } = {
+    const colors: {
+        [id: string]: string
+    } = {
         "Benfica": "#FF0000",
         "Porto": "#0000FF",
         "Sp Braga": "#FF4630",
@@ -132,7 +136,7 @@ export default function Home() {
                 });
                 setData(() => games);
                 setSelected([]);
-                setSelectedStats([]);
+                setSelectedStats(["goalscored", "goalsconceded", "shots", "shotstarget", "corners", "fouls", "yellows", "reds"]);
             })
             .catch(err => {
                 console.log(err);
@@ -475,7 +479,9 @@ export default function Home() {
             }
         }
 
-        let temp2: { [id: string]: number } = {};
+        let temp2: {
+            [id: string]: number
+        } = {};
 
         for (let key in temp) {
             temp2[key] = temp[key].points[temp[key].points.length - 1].points;
@@ -661,7 +667,9 @@ export default function Home() {
     const bpAllData = bpData
         .map(({group, data}) => {
             // Calculate sum of values for each label
-            const sumOfValues = data.reduce((acc: { [key: string]: number }, item) => {
+            const sumOfValues = data.reduce((acc: {
+                [key: string]: number
+            }, item) => {
                 item.forEach(({label, value}) => {
                     acc[label] = (acc[label] || 0) + value;
                 });
@@ -703,7 +711,7 @@ export default function Home() {
 
     if (isLoading) {
         return (
-            <>
+            <div style={{height: "90vh"}}>
                 <ResponsiveAppBar
                     pages={[
                         {label: "22/23", link: "/season?y=22-23"},
@@ -715,11 +723,11 @@ export default function Home() {
                     ]}
                 />
                 <LoadingComponent/>
-            </>
+            </div>
         )
     }
     return (
-        <>
+        <div style={{minHeight: "90vh"}}>
             <ResponsiveAppBar
                 pages={[
                     {label: "22/23", link: "/season?y=22-23"},
@@ -875,6 +883,6 @@ export default function Home() {
                     </Grid>
                 </Grid>
             </Grid>
-        </>
+        </div>
     );
 }
