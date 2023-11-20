@@ -7,7 +7,7 @@ import {VictoryDrawLoss} from "@/app/structs/VictoryDrawLoss";
 import MyTable from "@/app/components/Table";
 import {Stat} from "@/app/structs/Stat";
 import {Matchday} from "@/app/structs/Matchday";
-import {Grid, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
+import {Box, Grid, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 import {LineChart} from "@/app/components/LineChart";
 import {max} from "d3";
 import {ParallelCoordinate} from "@/app/components/ParallelCoordinatesChart";
@@ -578,12 +578,15 @@ export default function Home() {
         })
         .filter(({label}) => selected.includes(label));
 
+    const ppjWidth = 480;
+    const ppjHeight = 250;
+
     const ppjXScale = d3.scaleLinear()
         .domain([
             1,
             2 * Object.keys(info).length
         ])
-        .range([0, 480]);
+        .range([0, ppjWidth]);
 
     const ppjYScale = d3.scaleLinear()
         .domain([
@@ -592,7 +595,7 @@ export default function Home() {
                 max(ppjData, d => max(d.points, (p) => p.y)) as number
                 : 3 * 2 * Object.keys(info).length
         ])
-        .range([0, 250]);
+        .range([0, ppjHeight]);
 
     /*
     Parallel Coordinates Chart
@@ -612,15 +615,18 @@ export default function Home() {
         }
     }).filter(({label}) => selected.includes(label));
 
+    const pccWidth = 480;
+    const pccHeight = 250;
+
     const pccXScale = d3
         .scalePoint<string>()
-        .range([0, 480])
+        .range([0, pccWidth])
         .domain(pccVars);
 
     const pccYScales = {
         position: d3.scaleLinear()
             .domain([Object.keys(info).length, 1])
-            .range([250, Object.keys(info).length]),
+            .range([pccHeight, Object.keys(info).length]),
         points: d3.scaleLinear()
             .domain([
                 0,
@@ -628,7 +634,7 @@ export default function Home() {
                     max(pccData, d => d.points) as number
                     : 3 * 2 * Object.keys(info).length
             ])
-            .range([250, 0]),
+            .range([pccHeight, 0]),
         wins: d3.scaleLinear()
             .domain([
                 0,
@@ -636,7 +642,7 @@ export default function Home() {
                     max(pccData, d => d.wins) as number
                     : 2 * Object.keys(info).length
             ])
-            .range([250, 0]),
+            .range([pccHeight, 0]),
         draws: d3.scaleLinear()
             .domain([
                 0,
@@ -644,7 +650,7 @@ export default function Home() {
                     max(pccData, d => d.draws) as number
                     : 2 * Object.keys(info).length
             ])
-            .range([250, 0]),
+            .range([pccHeight, 0]),
         losses: d3.scaleLinear()
             .domain([
                 0,
@@ -652,7 +658,7 @@ export default function Home() {
                     max(pccData, d => d.losses) as number
                     : 2 * Object.keys(info).length
             ])
-            .range([250, 0])
+            .range([pccHeight, 0])
     };
 
     const pccYSpacings = {
@@ -688,13 +694,18 @@ export default function Home() {
         .sort((a, b) => info[a.group].position - info[b.group].position)
         .filter(({group}) => selected.includes(group));
 
+    const bpWidth = (typeMatchStats === "all")
+        ? 10000 * bpData.length
+        : 10000 * bpData.length / 2;
+    const bpHeight = 300;
+
     // For each match
     const bpXScale = d3.scaleBand<number>()
         .domain(
             (bpData.length > 0)
                 ? d3.range(bpData[0].data.length)
                 : d3.range(0))
-        .range([0, 10000 * bpData.length])
+        .range([0, bpWidth])
         .paddingInner(0.1);
 
     const bpYScale = d3.scaleLinear()
@@ -704,9 +715,7 @@ export default function Home() {
                 max(bpData, d => max(d.data, (p) => max(p, (q) => q.value))) as number
                 : 10
         ])
-        .range([0, 300]);
-
-    console.log(bpData)
+        .range([0, bpHeight]);
 
     return (
         <>
@@ -716,7 +725,7 @@ export default function Home() {
                     {label: "Temporada", link: "/season"},
                 ]}
             />
-            <Grid container padding={2} height={"200vh"}> {/*TODO: change this height*/}
+            <Grid container padding={2}>
                 <Grid item xs={4} padding={2}>
                     {info !== undefined && Object.keys(info).length &&
                         <MyTable
@@ -728,50 +737,56 @@ export default function Home() {
                     <Grid item xs={12}>
                         <Typography variant={"h5"}>Evolução de Pontos por jornada</Typography>
                         <LineChart
-                            width={"100%"}
-                            height={"100%"}
+                            width={ppjWidth + 75}
+                            height={ppjHeight + 75}
                             xScale={ppjXScale}
                             yScale={ppjYScale}
                             xSpacing={1}
                             ySpacing={5}
                             data={ppjData}
                         ></LineChart>
-                    </Grid>
-                    <Grid item xs={12}>
                         <Typography variant={"h5"}>Parallel Coordinates Plot</Typography>
                         <ParallelCoordinate
-                            width={"100%"}
-                            height={"100%"}
+                            width={pccWidth + 75}
+                            height={pccHeight + 75}
                             xScale={pccXScale}
                             yScales={pccYScales}
                             ySpacings={pccYSpacings}
                             data={pccData}
                             variables={pccVars}
                         ></ParallelCoordinate>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Typography>Estatísticas das partidas</Typography>
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Select
-                            value={typeMatchStats}
-                            onChange={changeTypeMatchStats}
-                        >
-                            <MenuItem value={"all"}>Todas</MenuItem>
-                            <MenuItem value={"home"}>Casa</MenuItem>
-                            <MenuItem value={"away"}>Fora</MenuItem>
-                        </Select>
-                    </Grid>
-                    <Grid item xs={12}>
                         <Typography variant={"h5"}>Partidas</Typography>
-                        <Barplot
-                            width={"100%"}
-                            height={"100%"}
-                            xScale={bpXScale}
-                            yScale={bpYScale}
-                            ySpacing={1}
-                            data={bpData}
-                        ></Barplot>
+                        <Grid container direction={"row"} alignItems={"center"}>
+                            <Typography
+                                paddingRight={2}
+                            >
+                                Estatísticas das partidas
+                            </Typography>
+                            <Select
+                                value={typeMatchStats}
+                                onChange={changeTypeMatchStats}
+                            >
+                                <MenuItem value={"all"}>Todas</MenuItem>
+                                <MenuItem value={"home"}>Casa</MenuItem>
+                                <MenuItem value={"away"}>Fora</MenuItem>
+                            </Select>
+                        </Grid>
+                        <Box
+                            sx={{
+                                width: "100%",
+                                overflowX: "scroll",
+                                whiteSpace: "nowrap",
+                            }}
+                        >
+                            <Barplot
+                                width={bpWidth + 50}
+                                height={bpHeight + 175}
+                                xScale={bpXScale}
+                                yScale={bpYScale}
+                                ySpacing={1}
+                                data={bpData}
+                            ></Barplot>
+                        </Box>
                     </Grid>
                 </Grid>
             </Grid>
