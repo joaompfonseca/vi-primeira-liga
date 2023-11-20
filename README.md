@@ -4,7 +4,7 @@
 
 This React based application using D3.js and Material UI allows the user to visualize statistics about the Portuguese
 Primeira Liga football championship from the 2017/18 season to the 2022/23 season. The user is able to select the
-season to analyse, and choose which teams to compare. Some of the used visualization technique are:
+season to analyse, and choose which teams to compare. Some of the used visualization techniques include:
 
 - **Line Chart:** Shows the evolution of the selected teams' points throughout the season.
 - **Parallel Coordinates Chart:** Correlates the selected teams' position, points, number of wins, number of losses and
