@@ -68,9 +68,10 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
-                        href="/season?y=22-23"
                     >
-                        Season 22/23
+                        <Link href={"/season?y=22-23"}>
+                            Season 22/23
+                        </Link>
                     </Button>
                 </Grid>
                 <Grid item xs={4} paddingY={1} textAlign={"center"}>
@@ -78,9 +79,10 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
-                        href="/season?y=21-22"
                     >
-                        Season 21/22
+                        <Link href={"/season?y=21-22"}>
+                            Season 21/22
+                        </Link>
                     </Button>
                 </Grid>
                 <Grid item xs={4} paddingY={1} textAlign={"center"}>
@@ -88,9 +90,10 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
-                        href="/season?y=20-21"
                     >
-                        Season 20/21
+                        <Link href={"/season?y=20-21"}>
+                            Season 20/21
+                        </Link>
                     </Button>
                 </Grid>
                 <Grid item xs={4} paddingY={1} textAlign={"center"}>
@@ -98,9 +101,10 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
-                        href="/season?y=19-20"
                     >
-                        Season 19/20
+                        <Link href={"/season?y=19-20"}>
+                            Season 19/20
+                        </Link>
                     </Button>
                 </Grid>
                 <Grid item xs={4} paddingY={1} textAlign={"center"}>
@@ -108,9 +112,10 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
-                        href="/season?y=18-19"
                     >
-                        Season 18/19
+                        <Link href={"/season?y=18-19"}>
+                            Season 18/19
+                        </Link>
                     </Button>
                 </Grid>
                 <Grid item xs={4} paddingY={1} textAlign={"center"}>
@@ -118,9 +123,10 @@ export default function Home() {
                         variant="contained"
                         color="primary"
                         size="large"
-                        href="/season?y=17-18"
                     >
-                        Season 17/18
+                        <Link href={"/season?y=17-18"}>
+                            Season 17/18
+                        </Link>
                     </Button>
                 </Grid>
             </Grid>

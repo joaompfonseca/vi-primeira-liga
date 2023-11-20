@@ -20,8 +20,6 @@ export const ResponsiveAppBar = ({pages}: ResponsiveAppBarProps) => {
                     <Typography
                         variant="h6"
                         noWrap
-                        component="a"
-                        href="/"
                         sx={{
                             mr: 2,
                             display: {xs: 'none', md: 'flex'},
@@ -31,7 +29,9 @@ export const ResponsiveAppBar = ({pages}: ResponsiveAppBarProps) => {
                             textDecoration: 'none',
                         }}
                     >
-                        PrimeiraLiga
+                        <Link key={"home"} href={"/"}>
+                            PrimeiraLiga
+                        </Link>
                     </Typography>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                         {pages.map(({label, link}) => (
