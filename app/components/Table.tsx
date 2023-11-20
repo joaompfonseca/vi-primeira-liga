@@ -22,7 +22,7 @@ interface TableProps {
 
 const MyTable: React.FC<TableProps> = ({data, updateSelected}) => {
 
-    const [selected, setSelected] = React.useState<string[]>([]);
+    const [selected, setSelected] = React.useState<string[]>(["Benfica", "Porto", "Sp Lisbon", "Sp Braga"]);
     const [rows, setRows] = React.useState<Row[]>([]);
 
     useEffect(() => {

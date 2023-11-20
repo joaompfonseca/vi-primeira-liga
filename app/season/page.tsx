@@ -53,9 +53,7 @@ export default function Home() {
 
     /* Selected stats */
 
-    const [selectedStats, setSelectedStats] = React.useState<string[]>(
-        ["goalscored", "goalsconceded", "shots", "shotstarget", "corners", "fouls", "yellows", "reds"]
-    );
+    const [selectedStats, setSelectedStats] = React.useState<string[]>();
 
     const updateSelectedStats = (event: ChangeEvent<HTMLInputElement>) => {
         const stat = event.target.value;
@@ -143,7 +141,7 @@ export default function Home() {
                     games = [...games, game];
                 });
                 setData(() => games);
-                setSelected([]);
+                setSelected(["Benfica", "Porto", "Sp Lisbon", "Sp Braga"]);
                 setSelectedStats(["goalscored", "goalsconceded", "shots", "shotstarget", "corners", "fouls", "yellows", "reds"]);
             })
             .catch(err => {
@@ -747,6 +745,9 @@ export default function Home() {
                 ]}
             />
             <Grid container padding={2}>
+                <Grid item xs={12} padding={2}>
+                    <Typography variant={"h3"}>Season {searchParams.get("y")}</Typography>
+                </Grid>
                 <Grid item xs={4} padding={2}>
                     {Object.keys(info).length &&
                         <MyTable
