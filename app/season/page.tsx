@@ -99,7 +99,7 @@ export default function Home() {
         if (!isLoading) {
             treatData();
         }
-    }, [isLoading]);
+    }, [isLoading, searchParams.get("y")]);
 
     const fetchdata = async () => {
         setIsLoading(true)
