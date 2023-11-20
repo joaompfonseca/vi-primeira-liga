@@ -756,7 +756,7 @@ export default function Home() {
                 </Grid>
                 <Grid container xs={8} padding={2}>
                     <Grid item xs={12}>
-                        <Typography variant={"h5"}>Point evolution per matchday</Typography>
+                        <Typography variant={"h5"}>Point Evolution per Match-day</Typography>
                         <LineChart
                             width={ppjWidth + 75}
                             height={ppjHeight + 75}
