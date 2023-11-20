@@ -25,8 +25,10 @@ import {Info} from "../structs/Info";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
 import {Barplot} from "@/app/components/Barplot";
 import LoadingComponent from "@/app/components/LoadingComponent";
+import {useSearchParams} from "next/navigation";
 
 export default function Home() {
+    const searchParams = useSearchParams();
 
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const [data, setData] = React.useState<Game[]>([]);
@@ -101,7 +103,7 @@ export default function Home() {
 
     const fetchdata = async () => {
         setIsLoading(true)
-        await d3.csv('data.csv')
+        await d3.csv(`${searchParams.get("y")}.csv`)
             .then(data => {
                 let games: Game[] = [];
                 data.map((e, i) => {
@@ -793,8 +795,12 @@ export default function Home() {
             <>
                 <ResponsiveAppBar
                     pages={[
-                        {label: "Tudo", link: "/"},
-                        {label: "Temporada", link: "/season"},
+                        {label: "22/23", link: "/season?y=22-23"},
+                        {label: "21/22", link: "/season?y=21-22"},
+                        {label: "20/21", link: "/season?y=20-21"},
+                        {label: "19/20", link: "/season?y=19-20"},
+                        {label: "18/19", link: "/season?y=18-19"},
+                        {label: "17/18", link: "/season?y=17-18"},
                     ]}
                 />
                 <LoadingComponent/>
@@ -805,8 +811,12 @@ export default function Home() {
         <>
             <ResponsiveAppBar
                 pages={[
-                    {label: "Tudo", link: "/"},
-                    {label: "Temporada", link: "/season"},
+                    {label: "22/23", link: "/season?y=22-23"},
+                    {label: "21/22", link: "/season?y=21-22"},
+                    {label: "20/21", link: "/season?y=20-21"},
+                    {label: "19/20", link: "/season?y=19-20"},
+                    {label: "18/19", link: "/season?y=18-19"},
+                    {label: "17/18", link: "/season?y=17-18"},
                 ]}
             />
             <Grid container padding={2}>
@@ -917,14 +927,22 @@ export default function Home() {
                                 </FormGroup>
                             </Grid>
                             <Grid item xs={9}>
-                                <Barplot
-                                    width={bpAllWidth + 50}
-                                    height={bpAllHeight + 175}
-                                    xScale={bpAllXScale}
-                                    yScale={bpAllYScale}
-                                    ySpacing={25}
-                                    data={bpAllData}
-                                ></Barplot>
+                                <Box
+                                    sx={{
+                                        width: "100%",
+                                        overflowX: "scroll",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                >
+                                    <Barplot
+                                        width={bpAllWidth + 50}
+                                        height={bpAllHeight + 175}
+                                        xScale={bpAllXScale}
+                                        yScale={bpAllYScale}
+                                        ySpacing={25}
+                                        data={bpAllData}
+                                    ></Barplot>
+                                </Box>
                                 <Box
                                     sx={{
                                         width: "100%",
