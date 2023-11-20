@@ -9,18 +9,18 @@ import * as d3 from "d3";
 
 export default function Home() {
 
-    const [data, setData] = React.useState<{[id:string] : {team:string,points:number}[]}>({});
+    const [data, setData] = React.useState<{[id:string] : {season:string,points:number}[]}>({});
 
     const fetchdata = async () => {
         await d3.csv(`total.csv`)
             .then(data => {
-                let seasons: {[id:string] : {team:string,points:number}[]} = {};
+                let seasons: {[id:string] : {season:string,points:number}[]} = {};
                 data.map((e, i) => {
-                        if (seasons[e.Season] === undefined) {
-                            seasons[e.Season] = [{"team": e.Team, "points": parseInt(e.Points)}];
+                        if (seasons[e.Team] === undefined) {
+                            seasons[e.Team] = [{"season": e.Season, "points": parseInt(e.Points)}];
                         }
                         else {
-                            seasons[e.Season].push({"team": e.Team, "points": parseInt(e.Points)});
+                            seasons[e.Team].push({"season": e.Season, "points": parseInt(e.Points)});
                         }
                     }
                 );
