@@ -27,9 +27,9 @@ export const BarItem = (props: BarItemProps) => {
                 rx={1}
             />
             <text
-                x={x + barWidth - 7}
+                x={x + barWidth - barWidth / 2}
                 y={y - barHeight - 7}
-                textAnchor="end"
+                textAnchor="middle"
                 alignmentBaseline="central"
                 fontSize={12}
             >

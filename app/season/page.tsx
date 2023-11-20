@@ -1,13 +1,23 @@
 "use client"
 
-import React, {useEffect} from "react";
+import React, {ChangeEvent, useEffect} from "react";
 import {Game} from "@/app/structs/Game";
 import * as d3 from "d3";
 import {VictoryDrawLoss} from "@/app/structs/VictoryDrawLoss";
 import MyTable from "@/app/components/Table";
 import {Stat} from "@/app/structs/Stat";
 import {Matchday} from "@/app/structs/Matchday";
-import {Box, Grid, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
+import {
+    Box,
+    Checkbox,
+    FormControlLabel,
+    FormGroup,
+    Grid,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    Typography
+} from "@mui/material";
 import {LineChart} from "@/app/components/LineChart";
 import {max} from "d3";
 import {ParallelCoordinate} from "@/app/components/ParallelCoordinatesChart";
@@ -34,6 +44,26 @@ export default function Home() {
 
     const changeTypeMatchStats = (event: SelectChangeEvent) => {
         setTypeMatchStats(event.target.value as string);
+    }
+
+    /* Selected stats */
+
+    const [selectedStats, setSelectedStats] = React.useState<string[]>(
+        ["goalscored", "goalsconceded", "shots", "shotstarget", "corners", "fouls", "yellows", "reds"]
+    );
+
+    const updateSelectedStats = (event: ChangeEvent<HTMLInputElement>) => {
+        const stat = event.target.value;
+        if (event.target.checked && !selectedStats.includes(stat)) {
+            setSelectedStats((prev) => {
+                return [...prev, stat];
+            });
+        }
+        if (!event.target.checked && selectedStats.includes(stat)) {
+            setSelectedStats((prev) => {
+                return prev.filter((e) => e !== stat);
+            });
+        }
     }
 
     /*
@@ -684,10 +714,9 @@ export default function Home() {
                         return {
                             label: statKey,
                             value: statValue as number,
-                            color: value.color // TODO: change to stat color
+                            color: value.color
                         }
-                    })
-                    //.filter(({label}) => label !== "jornada") // TODO: filter based on selected stats
+                    }).filter(({label}) => selectedStats.includes(label))
                 })
             };
         })
@@ -695,8 +724,8 @@ export default function Home() {
         .filter(({group}) => selected.includes(group));
 
     const bpWidth = (typeMatchStats === "all")
-        ? 10000 * bpData.length
-        : 10000 * bpData.length / 2;
+        ? 10000 * (bpData.length)
+        : 10000 * (bpData.length) / 2;
     const bpHeight = 300;
 
     // For each match
@@ -706,7 +735,7 @@ export default function Home() {
                 ? d3.range(bpData[0].data.length)
                 : d3.range(0))
         .range([0, bpWidth])
-        .paddingInner(0.1);
+        .paddingInner(0.05);
 
     const bpYScale = d3.scaleLinear()
         .domain([
@@ -716,6 +745,49 @@ export default function Home() {
                 : 10
         ])
         .range([0, bpHeight]);
+
+    const bpAllData = bpData
+        .map(({group, data}) => {
+            // Calculate sum of values for each label
+            const sumOfValues = data.reduce((acc: {[key: string]: number}, item) => {
+                item.forEach(({label, value}) => {
+                    acc[label] = (acc[label] || 0) + value;
+                });
+                return acc;
+            }, {});
+
+            // Create a new element containing the sum of values
+            const sumElement = Object.entries(sumOfValues).map(([label, value]) => ({
+                label,
+                value,
+                color: data[0][0].color, // Assuming the color is consistent for all elements
+            }));
+
+            return {
+                group,
+                data: [sumElement]
+            }
+        });
+
+    const bpAllWidth = 250 * (bpAllData.length);
+    const bpAllHeight = 300;
+
+    // For each match
+    const bpAllXScale = d3.scaleBand<number>()
+        .domain(
+            (bpAllData.length > 0)
+                ? d3.range(bpAllData[0].data.length)
+                : d3.range(0))
+        .range([0, bpAllWidth]);
+
+    const bpAllYScale = d3.scaleLinear()
+        .domain([
+            0,
+            (bpAllData.length > 0) ?
+                max(bpAllData, d => max(d.data, (p) => max(p, (q) => q.value))) as number
+                : 10
+        ])
+        .range([0, bpAllHeight]);
 
     return (
         <>
@@ -745,7 +817,7 @@ export default function Home() {
                             ySpacing={5}
                             data={ppjData}
                         ></LineChart>
-                        <Typography variant={"h5"}>Parallel Coordinates Plot</Typography>
+                        <Typography variant={"h5"}>Final Results Correlation</Typography>
                         <ParallelCoordinate
                             width={pccWidth + 75}
                             height={pccHeight + 75}
@@ -771,22 +843,94 @@ export default function Home() {
                                 <MenuItem value={"away"}>Fora</MenuItem>
                             </Select>
                         </Grid>
-                        <Box
-                            sx={{
-                                width: "100%",
-                                overflowX: "scroll",
-                                whiteSpace: "nowrap",
-                            }}
-                        >
-                            <Barplot
-                                width={bpWidth + 50}
-                                height={bpHeight + 175}
-                                xScale={bpXScale}
-                                yScale={bpYScale}
-                                ySpacing={1}
-                                data={bpData}
-                            ></Barplot>
-                        </Box>
+                        <Grid container direction={"row"} alignItems={"center"}>
+                            <Grid item xs={3}>
+                                <FormGroup>
+                                    <FormControlLabel control={
+                                        <Checkbox
+                                            defaultChecked
+                                            value={"goalscored"}
+                                            onChange={updateSelectedStats}
+                                        />
+                                    } label="Goals Scored"/>
+                                    <FormControlLabel control={
+                                        <Checkbox
+                                            defaultChecked
+                                            value={"goalsconceded"}
+                                            onChange={updateSelectedStats}
+                                        />
+                                    } label="Goals Conceeded"/>
+                                    <FormControlLabel control={
+                                        <Checkbox
+                                            defaultChecked
+                                            value={"shots"}
+                                            onChange={updateSelectedStats}
+                                        />
+                                    } label="Shots"/>
+                                    <FormControlLabel control={
+                                        <Checkbox
+                                            defaultChecked
+                                            value={"shotstarget"}
+                                            onChange={updateSelectedStats}
+                                        />
+                                    } label="Shots (on target)"/>
+                                    <FormControlLabel control={
+                                        <Checkbox
+                                            defaultChecked
+                                            value={"corners"}
+                                            onChange={updateSelectedStats}
+                                        />
+                                    } label="Corners"/>
+                                    <FormControlLabel control={
+                                        <Checkbox
+                                            defaultChecked
+                                            value={"fouls"}
+                                            onChange={updateSelectedStats}
+                                        />
+                                    } label="Commited Fouls"/>
+                                    <FormControlLabel control={
+                                        <Checkbox
+                                            defaultChecked
+                                            value={"yellows"}
+                                            onChange={updateSelectedStats}
+                                        />
+                                    } label="Yellow Cards"/>
+                                    <FormControlLabel control={
+                                        <Checkbox
+                                            defaultChecked
+                                            value={"reds"}
+                                            onChange={updateSelectedStats}
+                                        />
+                                    } label="Red Cards"/>
+                                </FormGroup>
+                            </Grid>
+                            <Grid item xs={9}>
+                                <Barplot
+                                    width={bpAllWidth + 50}
+                                    height={bpAllHeight + 175}
+                                    xScale={bpAllXScale}
+                                    yScale={bpAllYScale}
+                                    ySpacing={25}
+                                    data={bpAllData}
+                                ></Barplot>
+                                <Box
+                                    sx={{
+                                        width: "100%",
+                                        overflowX: "scroll",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                >
+                                    <Barplot
+                                        width={bpWidth + 50}
+                                        height={bpHeight + 175}
+                                        xScale={bpXScale}
+                                        yScale={bpYScale}
+                                        ySpacing={1}
+                                        data={bpData}
+                                    ></Barplot>
+                                </Box>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

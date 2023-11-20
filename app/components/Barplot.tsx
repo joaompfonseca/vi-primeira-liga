@@ -24,7 +24,7 @@ export const Barplot = ({width, height, xScale, yScale, ySpacing, data}: Barplot
             // Match labels
             allShapes.push(<BarLabel
                 key={i}
-                name={"Jornada " + (i+1)}
+                name={(numberOfMatches > 1) ? "Matchday " + (i + 1) : "Season Total"}
                 fontSize={15}
                 fontWeight={700}
                 x={xScale(i) as number + xScale.bandwidth() / 2}
