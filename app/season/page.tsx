@@ -819,7 +819,7 @@ export default function Home() {
                 </Grid>
                 <Grid container xs={8} padding={2}>
                     <Grid item xs={12}>
-                        <Typography variant={"h5"}>Evolução de Pontos por jornada</Typography>
+                        <Typography variant={"h5"}>Point evolution per matchday</Typography>
                         <LineChart
                             width={ppjWidth + 75}
                             height={ppjHeight + 75}
@@ -839,20 +839,20 @@ export default function Home() {
                             data={pccData}
                             variables={pccVars}
                         ></ParallelCoordinate>
-                        <Typography variant={"h5"}>Partidas</Typography>
+                        <Typography variant={"h5"}>Matches</Typography>
                         <Grid container direction={"row"} alignItems={"center"}>
                             <Typography
                                 paddingRight={2}
                             >
-                                Estatísticas das partidas
+                                Matches Stats
                             </Typography>
                             <Select
                                 value={typeMatchStats}
                                 onChange={changeTypeMatchStats}
                             >
-                                <MenuItem value={"all"}>Todas</MenuItem>
-                                <MenuItem value={"home"}>Casa</MenuItem>
-                                <MenuItem value={"away"}>Fora</MenuItem>
+                                <MenuItem value={"all"}>All</MenuItem>
+                                <MenuItem value={"home"}>Home</MenuItem>
+                                <MenuItem value={"away"}>Away</MenuItem>
                             </Select>
                         </Grid>
                         <Grid container direction={"row"} alignItems={"center"}>
