@@ -2,7 +2,7 @@
 
 import React from "react";
 import ResponsiveAppBar from './components/ResponsiveAppBar';
-import {ButtonGroup, Grid, Typography} from "@mui/material";
+import {Box, ButtonGroup, Checkbox, Grid, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import Link from "next/link";
 import * as d3 from "d3";
@@ -13,7 +13,12 @@ import {max} from "d3";
 export default function Home() {
 
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
-    const [data, setData] = React.useState<{[id:string] : {team:string,points:number}[]}>({});
+    const [data, setData] = React.useState<{
+        [id: string]: {
+            season: number,
+            points: number
+        }[]
+    }>({});
 
     const colors: {
         [id: string]: string
@@ -27,19 +32,22 @@ export default function Home() {
     const fetchdata = async () => {
         await d3.csv(`total.csv`)
             .then(data => {
-                let seasons: {[id:string] : {season:number,points:number}[]} = {};
+                let teams: {
+                    [id: string]: {
+                        season: number,
+                        points: number
+                    }[]
+                } = {};
                 data.map((e, i) => {
-                        if (seasons[e.Team] === undefined) {
-                            seasons[e.Team] = [{"season": parseInt(e.Season), "points": parseInt(e.Points)}];
-                        }
-                        else {
-                            seasons[e.Team].push({"season": parseInt(e.Season), "points": parseInt(e.Points)});
+                        if (teams[e.Team] === undefined) {
+                            teams[e.Team] = [{"season": parseInt(e.Season), "points": parseInt(e.Points)}];
+                        } else {
+                            teams[e.Team].push({"season": parseInt(e.Season), "points": parseInt(e.Points)});
                         }
                     }
                 );
-                setData(seasons);
-            }
-        );
+                setData(teams);
+            });
     }
 
     React.useEffect(() => {
@@ -56,31 +64,32 @@ export default function Home() {
     const ppsData = Object.entries(data)
         .map(([key, value]) => {
             return {
-                label: value.team,
-                points: {x: parseInt(key), y: value.points},
-                color: colors[value.team]
-            };
-        })
-        .filter(({label}) => selected.includes(label));
+                label: key,
+                points: value.map(({season, points}) => {
+                    return {
+                        x: season,
+                        y: points
+                    }
+                }).sort((a, b) => a.x - b.x),
+                color: colors[key]
+            }
+        });
 
     const ppsWidth = 480;
     const ppsHeight = 250;
 
     const ppsXScale = d3.scaleLinear()
-        .domain([
-            1,
-            2 * Object.keys(info).length
-        ])
-        .range([0, ppjWidth]);
+        .domain([2017, 2022])
+        .range([0, ppsWidth]);
 
     const ppsYScale = d3.scaleLinear()
         .domain([
             0,
-            (ppjData.length > 0) ?
-                max(ppjData, d => max(d.points, (p) => p.y)) as number
-                : 3 * 2 * Object.keys(info).length
+            (ppsData.length > 0) ?
+                max(ppsData, d => max(d.points, (p) => p.y)) as number
+                : 3 * 2 * Object.keys(data).length
         ])
-        .range([0, ppjHeight]);
+        .range([0, ppsHeight]);
 
     if (isLoading) {
         return (
@@ -160,16 +169,44 @@ export default function Home() {
                     </Typography>
                 </Grid>
                 <Grid item xs={12} paddingY={1}>
-                    <Typography variant={"h5"}>Point Evolution per Season</Typography>
-                    <LineChart
-                        width={ppsWidth + 75}
-                        height={ppsHeight + 75}
-                        xScale={ppsXScale}
-                        yScale={ppsYScale}
-                        xSpacing={1}
-                        ySpacing={5}
-                        data={ppsData}
-                    ></LineChart>
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <Typography variant={"h5"}>Point Evolution per Season</Typography>
+                        </Grid>
+                        <Grid item xs={3}>
+                            {Object.entries(colors).map(([key, value]) => {
+                                return (
+                                    <Grid container paddingY={1} alignItems={"center"} key={key}>
+                                        <Grid item xs={2}>
+                                            <Box
+                                                paddingRight={2}
+                                                style={{
+add                                                    height: 30,
+                                                    width: 30,
+                                                    borderRadius: "50%",
+                                                    backgroundColor: value
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={10} textAlign={"start"}>
+                                            <Typography>{key}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                )
+                            })}
+                        </Grid>
+                        <Grid item xs={9}>
+                            <LineChart
+                                width={ppsWidth + 75}
+                                height={ppsHeight + 75}
+                                xScale={ppsXScale}
+                                yScale={ppsYScale}
+                                xSpacing={1}
+                                ySpacing={5}
+                                data={ppsData}
+                            />
+                        </Grid>
+                    </Grid>
                 </Grid>
                 <Grid item xs={4} paddingY={1} textAlign={"center"}>
                     <Button
