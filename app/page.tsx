@@ -181,7 +181,7 @@ export default function Home() {
                                             <Box
                                                 paddingRight={2}
                                                 style={{
-add                                                    height: 30,
+                                                    height: 30,
                                                     width: 30,
                                                     borderRadius: "50%",
                                                     backgroundColor: value
