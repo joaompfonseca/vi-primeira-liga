@@ -27,13 +27,13 @@ export default function Home() {
     const fetchdata = async () => {
         await d3.csv(`total.csv`)
             .then(data => {
-                let seasons: {[id:string] : {season:string,points:number}[]} = {};
+                let seasons: {[id:string] : {season:number,points:number}[]} = {};
                 data.map((e, i) => {
                         if (seasons[e.Team] === undefined) {
-                            seasons[e.Team] = [{"season": e.Season, "points": parseInt(e.Points)}];
+                            seasons[e.Team] = [{"season": parseInt(e.Season), "points": parseInt(e.Points)}];
                         }
                         else {
-                            seasons[e.Team].push({"season": e.Season, "points": parseInt(e.Points)});
+                            seasons[e.Team].push({"season": parseInt(e.Season), "points": parseInt(e.Points)});
                         }
                     }
                 );
