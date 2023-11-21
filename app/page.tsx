@@ -6,10 +6,23 @@ import {ButtonGroup, Grid, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import Link from "next/link";
 import * as d3 from "d3";
+import LoadingComponent from "@/app/components/LoadingComponent";
+import {LineChart} from "@/app/components/LineChart";
+import {max} from "d3";
 
 export default function Home() {
 
-    const [data, setData] = React.useState<{[id:string] : {season:string,points:number}[]}>({});
+    const [isLoading, setIsLoading] = React.useState<boolean>(true);
+    const [data, setData] = React.useState<{[id:string] : {team:string,points:number}[]}>({});
+
+    const colors: {
+        [id: string]: string
+    } = {
+        "Benfica": "#FF0000",
+        "Porto": "#0000FF",
+        "Sp Braga": "#FF4630",
+        "Sp Lisbon": "#0E8600",
+    };
 
     const fetchdata = async () => {
         await d3.csv(`total.csv`)
@@ -30,11 +43,62 @@ export default function Home() {
     }
 
     React.useEffect(() => {
+        setIsLoading(true);
         fetchdata();
+        setIsLoading(false);
     }, []);
 
-    console.log(data);
 
+    /*
+    Points per season
+    */
+
+    const ppsData = Object.entries(data)
+        .map(([key, value]) => {
+            return {
+                label: value.team,
+                points: {x: parseInt(key), y: value.points},
+                color: colors[value.team]
+            };
+        })
+        .filter(({label}) => selected.includes(label));
+
+    const ppsWidth = 480;
+    const ppsHeight = 250;
+
+    const ppsXScale = d3.scaleLinear()
+        .domain([
+            1,
+            2 * Object.keys(info).length
+        ])
+        .range([0, ppjWidth]);
+
+    const ppsYScale = d3.scaleLinear()
+        .domain([
+            0,
+            (ppjData.length > 0) ?
+                max(ppjData, d => max(d.points, (p) => p.y)) as number
+                : 3 * 2 * Object.keys(info).length
+        ])
+        .range([0, ppjHeight]);
+
+    if (isLoading) {
+        return (
+            <div style={{height: "90vh"}}>
+                <ResponsiveAppBar
+                    pages={[
+                        {label: "22/23", link: "/season?y=22-23"},
+                        {label: "21/22", link: "/season?y=21-22"},
+                        {label: "20/21", link: "/season?y=20-21"},
+                        {label: "19/20", link: "/season?y=19-20"},
+                        {label: "18/19", link: "/season?y=18-19"},
+                        {label: "17/18", link: "/season?y=17-18"},
+                    ]}
+                />
+                <LoadingComponent/>
+            </div>
+        )
+    }
     return (
         <div style={{minHeight: "90vh"}}>
             <ResponsiveAppBar
@@ -94,6 +158,18 @@ export default function Home() {
                         of stats, stories, and the everlasting magic of football&apos;s finest moments. Let the journey
                         begin!
                     </Typography>
+                </Grid>
+                <Grid item xs={12} paddingY={1}>
+                    <Typography variant={"h5"}>Point Evolution per Season</Typography>
+                    <LineChart
+                        width={ppsWidth + 75}
+                        height={ppsHeight + 75}
+                        xScale={ppsXScale}
+                        yScale={ppsYScale}
+                        xSpacing={1}
+                        ySpacing={5}
+                        data={ppsData}
+                    ></LineChart>
                 </Grid>
                 <Grid item xs={4} paddingY={1} textAlign={"center"}>
                     <Button
