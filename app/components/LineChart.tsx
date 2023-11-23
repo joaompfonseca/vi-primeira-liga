@@ -15,8 +15,8 @@ type LineChartProps = {
 
 export const LineChart = ({width, height, xScale, yScale, xSpacing, ySpacing, data}: LineChartProps) => {
 
-    const xPixelsPerTick = Math.abs(xSpacing*(xScale.range()[1] - xScale.range()[0]) / (xScale.domain()[1] - xScale.domain()[0]));
-    const yPixelsPerTick = Math.abs(ySpacing*(yScale.range()[1] - yScale.range()[0]) / (yScale.domain()[1] - yScale.domain()[0]));
+    const xPixelsPerTick = Math.abs(xSpacing * (xScale.range()[1] - xScale.range()[0]) / (xScale.domain()[1] - xScale.domain()[0]));
+    const yPixelsPerTick = Math.abs(ySpacing * (yScale.range()[1] - yScale.range()[0]) / (yScale.domain()[1] - yScale.domain()[0]));
 
 
     // build the lines
@@ -36,13 +36,25 @@ export const LineChart = ({width, height, xScale, yScale, xSpacing, ySpacing, da
             </g>
             <g transform={`translate(50, 30)`}>
                 {data.map((d, i) =>
-                    <path
+                    <g
                         key={d.label}
-                        d={lineBuilder(d.points) as string}
-                        fill={"none"}
-                        stroke={d.color}
-                        strokeWidth={2}
-                    />
+                    >
+                        <path
+                            d={lineBuilder(d.points) as string}
+                            fill={"none"}
+                            stroke={d.color}
+                            strokeWidth={2}
+                        />
+                        <text
+                            x={xScale(d.points[d.points.length - 1].x) + 10}
+                            y={yScale.range()[1] - yScale(d.points[d.points.length - 1].y)}
+                            textAnchor="start"
+                            alignmentBaseline="central"
+                            fontSize={12}
+                        >
+                            {d.label}
+                        </text>
+                    </g>
                 )}
             </g>
         </svg>

@@ -197,7 +197,7 @@ export default function Home() {
                         </Grid>
                         <Grid item xs={9}>
                             <LineChart
-                                width={ppsWidth + 75}
+                                width={ppsWidth + 150}
                                 height={ppsHeight + 75}
                                 xScale={ppsXScale}
                                 yScale={ppsYScale}
