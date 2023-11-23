@@ -1,6 +1,6 @@
 "use client"
 
-import React, {ChangeEvent, useEffect} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import {Game} from "@/app/structs/Game";
 import * as d3 from "d3";
 import {VictoryDrawLoss} from "@/app/structs/VictoryDrawLoss";
@@ -23,29 +23,21 @@ import {max} from "d3";
 import {ParallelCoordinate} from "@/app/components/ParallelCoordinatesChart";
 import {Info} from "../structs/Info";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
-import {Barplot} from "@/app/components/Barplot";
+import {BarPlot} from "@/app/components/Barplot";
 import LoadingComponent from "@/app/components/LoadingComponent";
 import {useSearchParams} from "next/navigation";
 
 export default function Home() {
     const searchParams = useSearchParams();
 
-    const [isLoading, setIsLoading] = React.useState<boolean>(true);
-    const [data, setData] = React.useState<Game[]>([]);
-    const [results, setResults] = React.useState<VictoryDrawLoss[]>([]);
-    const [selected, setSelected] = React.useState<string[]>([]);
-    const [stats, setStats] = React.useState<Stat[]>([]);
-    const [points, setPoints] = React.useState<{
-        [id: string]: Matchday[]
-    }>({});
-
-    const [info, setInfo] = React.useState<{
-        [id: string]: Info
-    }>({});
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [data, setData] = useState<Game[]>([]);
+    const [info, setInfo] = useState<{ [id: string]: Info }>({});
+    const [selected, setSelected] = useState<string[]>([]);
 
     /* Type of match stats */
 
-    const [typeMatchStats, setTypeMatchStats] = React.useState<string>("all");
+    const [typeMatchStats, setTypeMatchStats] = useState<string>("all");
 
     const changeTypeMatchStats = (event: SelectChangeEvent) => {
         setTypeMatchStats(event.target.value as string);
@@ -53,7 +45,7 @@ export default function Home() {
 
     /* Selected stats */
 
-    const [selectedStats, setSelectedStats] = React.useState<string[]>([]);
+    const [selectedStats, setSelectedStats] = useState<string[]>([]);
 
     const updateSelectedStats = (event: ChangeEvent<HTMLInputElement>) => {
         const stat = event.target.value;
@@ -118,7 +110,7 @@ export default function Home() {
         await d3.csv(`${searchParams.get("y")}.csv`)
             .then(data => {
                 let games: Game[] = [];
-                data.map((e, i) => {
+                data.map((e) => {
                     const game = new Game(e["HomeTeam"],
                         e["AwayTeam"],
                         parseInt(e["FTHG"]),
@@ -416,8 +408,6 @@ export default function Home() {
             }
         }
 
-        setPoints(dicp);
-
         let temp: {
             [id: string]: Info;
         } = {};
@@ -441,28 +431,19 @@ export default function Home() {
 
 
         for (const [key, value] of Object.entries(dics)) {
-
             temp[key].stats = value;
-
-            setStats(value);
         }
 
         for (const [key, value] of Object.entries(dicsh)) {
-
             temp[key].statshome = value;
         }
 
         for (const [key, value] of Object.entries(dicsa)) {
-
             temp[key].statsaway = value;
         }
 
-        results.splice(0)
         for (const [key, value] of Object.entries(dict)) {
-
             temp[key].results = value;
-
-            results.push(value);
         }
 
         for (const [key, value] of Object.entries(dicth)) {
@@ -472,12 +453,6 @@ export default function Home() {
         for (const [key, value] of Object.entries(dicta)) {
             temp[key].resultsaway = value;
         }
-
-
-        // sort results by points
-        results.sort((a, b) => {
-            return b.points - a.points;
-        });
 
         for (const [key, value] of Object.entries(colors)) {
             if (Object.keys(temp).includes(key)) {
@@ -504,7 +479,6 @@ export default function Home() {
 
         for (let i = 0; i < sortable.length; i++) {
             let key = sortable[i][0];
-            let value = sortable[i][1];
             temp[key].position = i + 1;
         }
 
@@ -862,14 +836,14 @@ export default function Home() {
                                         whiteSpace: "nowrap",
                                     }}
                                 >
-                                    <Barplot
+                                    <BarPlot
                                         width={bpAllWidth + 50}
                                         height={bpAllHeight + 175}
                                         xScale={bpAllXScale}
                                         yScale={bpAllYScale}
                                         ySpacing={25}
                                         data={bpAllData}
-                                    ></Barplot>
+                                    ></BarPlot>
                                 </Box>
                                 <Box
                                     sx={{
@@ -878,14 +852,14 @@ export default function Home() {
                                         whiteSpace: "nowrap",
                                     }}
                                 >
-                                    <Barplot
+                                    <BarPlot
                                         width={bpWidth + 50}
                                         height={bpHeight + 175}
                                         xScale={bpXScale}
                                         yScale={bpYScale}
                                         ySpacing={1}
                                         data={bpData}
-                                    ></Barplot>
+                                    ></BarPlot>
                                 </Box>
                             </Grid>
                         </Grid>

@@ -92,7 +92,7 @@ export const LineChart = ({width, height, xScale, yScale, xSpacing, ySpacing, da
                     <AxisLeft yScale={yScale} pixelsPerTick={yPixelsPerTick} width={100}></AxisLeft>
                 </g>
                 <g transform={`translate(50, 30)`}>
-                    {data.map((d, i) =>
+                    {data.map((d) =>
                         <g
                             key={d.label}
                         >

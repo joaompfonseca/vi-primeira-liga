@@ -1,10 +1,9 @@
 import * as d3 from "d3";
 import {BarItem} from "@/app/components/BarItem";
-import {AxisBottom} from "@/app/components/AxisBottom";
-import {AxisLeft} from "@/app/components/AxisLeft"; // we will need d3.js
+import {AxisLeft} from "@/app/components/AxisLeft";
 import {BarLabel} from "./BarLabel";
 
-type BarplotProps = {
+type BarPlotProps = {
     width: number | string;
     height: number | string;
     xScale: d3.ScaleBand<number>;
@@ -13,7 +12,7 @@ type BarplotProps = {
     data: { group: string; data: { label: string, value: number, color: string }[][] }[];
 };
 
-export const Barplot = ({width, height, xScale, yScale, ySpacing, data}: BarplotProps) => {
+export const BarPlot = ({width, height, xScale, yScale, ySpacing, data}: BarPlotProps) => {
 
     const yPixelsPerTick = Math.abs(ySpacing * (yScale.range()[1] - yScale.range()[0]) / (yScale.domain()[1] - yScale.domain()[0]));
 
