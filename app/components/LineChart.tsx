@@ -29,7 +29,7 @@ export const LineChart = ({width, height, xScale, yScale, xSpacing, ySpacing, da
         const values = data.map(d => {
             const point = d.points.find(p => p.x === xValue);
             return {label: d.label, point: point as Point2D, color: d.color};
-        });
+        }).sort((a, b) => b.point.y - a.point.y);
         setTooltip({xMouse, yMouse, values});
     }
 
