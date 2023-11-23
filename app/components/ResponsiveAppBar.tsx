@@ -5,7 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import AdbIcon from '@mui/icons-material/Adb';
+import SportsSoccer from '@mui/icons-material/SportsSoccer';
 import Link from 'next/link';
 
 type ResponsiveAppBarProps = {
@@ -16,7 +16,7 @@ export const ResponsiveAppBar = ({pages}: ResponsiveAppBarProps) => {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
+                    <SportsSoccer sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
                     <Typography
                         variant="h6"
                         noWrap
