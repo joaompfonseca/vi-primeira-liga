@@ -13,6 +13,15 @@ season to analyse, and choose which teams to compare. Some of the used visualiza
   include the number of goals scored, goals conceded, shots, shots (on target), corners, fouls, yellow cards and red
   cards.
 
+## Installation
+
+- Run `npm install` in root to install project dependencies.
+
+## Running the Applicaiton
+
+- Run `npm run dev` in root to run the project in developer mode.
+- The application should be running on [localhost:5000](http://localhost:5000/).
+
 **Deployment:** [Primeira Liga @ GitHub](https://joaompfonseca.github.io/vi-primeira-liga/)
 
 **Course:** Information Visualization (2023/2024).
